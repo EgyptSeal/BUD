@@ -1,0 +1,392 @@
+{
+  "database": {
+    "2026-03": {
+      "grossIncome": 144740,
+      "deductions": [
+        {
+          "name": "Monthly Tax Payable",
+          "amount": 36340
+        },
+        {
+          "name": "Total EE Contribution",
+          "amount": 1837
+        },
+        {
+          "name": "Martyr's Fund Deduction",
+          "amount": 111
+        },
+        {
+          "name": "Mobile Bill",
+          "amount": 60
+        },
+        {
+          "name": "Monthly installments",
+          "amount": 7077
+        }
+      ],
+      "income": 99315,
+      "annualBonus": 0,
+      "savingFromLastMonth": 0,
+      "expenses": [
+        {
+          "category": "Apartment",
+          "subcategory": "Rent",
+          "spent": 13500,
+          "amount": 13500,
+          "currency": "EGP",
+          "amountEGP": 13500,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Apartment",
+          "subcategory": "Electricity",
+          "spent": 1025,
+          "amount": 1025,
+          "currency": "EGP",
+          "amountEGP": 1025,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Apartment",
+          "subcategory": "Water",
+          "spent": 0,
+          "amount": 0,
+          "currency": "EGP",
+          "amountEGP": 0,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Apartment",
+          "subcategory": "N. Gas",
+          "spent": 0,
+          "amount": 0,
+          "currency": "EGP",
+          "amountEGP": 0,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Apartment",
+          "subcategory": "WE Landline",
+          "spent": 30,
+          "amount": 30,
+          "currency": "EGP",
+          "amountEGP": 30,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Apartment",
+          "subcategory": "WE Internet",
+          "spent": 569,
+          "amount": 569,
+          "currency": "EGP",
+          "amountEGP": 569,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Apartment",
+          "subcategory": "Maintenance Diff.",
+          "spent": 0,
+          "amount": 0,
+          "currency": "EGP",
+          "amountEGP": 0,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Pet-Mylo",
+          "subcategory": "Buying",
+          "spent": 0,
+          "amount": 0,
+          "currency": "EGP",
+          "amountEGP": 0,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Pet-Mylo",
+          "subcategory": "Grooming + Boarding",
+          "spent": 0,
+          "amount": 0,
+          "currency": "EGP",
+          "amountEGP": 0,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Pet-Mylo",
+          "subcategory": "Vaccines",
+          "spent": 0,
+          "amount": 0,
+          "currency": "EGP",
+          "amountEGP": 0,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Pet-Mylo",
+          "subcategory": "Diapers",
+          "spent": 0,
+          "amount": 0,
+          "currency": "EGP",
+          "amountEGP": 0,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Luxury",
+          "subcategory": "Charity",
+          "spent": 0,
+          "amount": 0,
+          "currency": "EGP",
+          "amountEGP": 0,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Luxury",
+          "subcategory": "LinkedIn Premium",
+          "spent": 285,
+          "amount": 285,
+          "currency": "EGP",
+          "amountEGP": 285,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Luxury",
+          "subcategory": "Cigarettes",
+          "spent": 9900,
+          "amount": 9900,
+          "currency": "EGP",
+          "amountEGP": 9900,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Luxury",
+          "subcategory": "Gas for Car",
+          "spent": 3500,
+          "amount": 3500,
+          "currency": "EGP",
+          "amountEGP": 3500,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Super Luxury",
+          "subcategory": "Car Wash",
+          "spent": 60,
+          "amount": 60,
+          "currency": "EGP",
+          "amountEGP": 60,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Super Luxury",
+          "subcategory": "UBER",
+          "spent": 10500,
+          "amount": 10500,
+          "currency": "EGP",
+          "amountEGP": 10500,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Super Luxury",
+          "subcategory": "Nails",
+          "spent": 250,
+          "amount": 250,
+          "currency": "EGP",
+          "amountEGP": 250,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Super Luxury",
+          "subcategory": "Barber Shop",
+          "spent": 250,
+          "amount": 250,
+          "currency": "EGP",
+          "amountEGP": 250,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Super Luxury",
+          "subcategory": "Garage",
+          "spent": 0,
+          "amount": 0,
+          "currency": "EGP",
+          "amountEGP": 0,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Entertainment",
+          "subcategory": "Netflix",
+          "spent": 252,
+          "amount": 252,
+          "currency": "EGP",
+          "amountEGP": 252,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Entertainment",
+          "subcategory": "VPN",
+          "spent": 670,
+          "amount": 670,
+          "currency": "EGP",
+          "amountEGP": 670,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Entertainment",
+          "subcategory": "Watch It",
+          "spent": 120,
+          "amount": 120,
+          "currency": "EGP",
+          "amountEGP": 120,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Entertainment",
+          "subcategory": "Apple ONE",
+          "spent": 249,
+          "amount": 249,
+          "currency": "EGP",
+          "amountEGP": 249,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Entertainment",
+          "subcategory": "Youtube Premium",
+          "spent": 121,
+          "amount": 121,
+          "currency": "EGP",
+          "amountEGP": 121,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Entertainment",
+          "subcategory": "Amazon Prime",
+          "spent": 20,
+          "amount": 20,
+          "currency": "EGP",
+          "amountEGP": 20,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Car",
+          "subcategory": "Service",
+          "spent": 0,
+          "amount": 0,
+          "currency": "EGP",
+          "amountEGP": 0,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Car",
+          "subcategory": "EV charge",
+          "spent": 0,
+          "amount": 0,
+          "currency": "EGP",
+          "amountEGP": 0,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Car",
+          "subcategory": "Addons",
+          "spent": 0,
+          "amount": 0,
+          "currency": "EGP",
+          "amountEGP": 0,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Car",
+          "subcategory": "Accessories",
+          "spent": 0,
+          "amount": 0,
+          "currency": "EGP",
+          "amountEGP": 0,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Car",
+          "subcategory": "Cleaning",
+          "spent": 0,
+          "amount": 0,
+          "currency": "EGP",
+          "amountEGP": 0,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Loans",
+          "subcategory": "Car loan",
+          "spent": 42910,
+          "amount": 42910,
+          "currency": "EGP",
+          "amountEGP": 42910,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Food",
+          "subcategory": "Groceries",
+          "spent": 8500,
+          "amount": 8500,
+          "currency": "EGP",
+          "amountEGP": 8500,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Food",
+          "subcategory": "Delivery",
+          "spent": 15000,
+          "amount": 15000,
+          "currency": "EGP",
+          "amountEGP": 15000,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Food",
+          "subcategory": "Coffee",
+          "spent": 7500,
+          "amount": 7500,
+          "currency": "EGP",
+          "amountEGP": 7500,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Food",
+          "subcategory": "Restaurants",
+          "spent": 0,
+          "amount": 0,
+          "currency": "EGP",
+          "amountEGP": 0,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Utilities",
+          "subcategory": "Mobile Bill",
+          "spent": 881,
+          "amount": 881,
+          "currency": "EGP",
+          "amountEGP": 881,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Other",
+          "subcategory": "Charity giving",
+          "spent": 0,
+          "amount": 0,
+          "currency": "EGP",
+          "amountEGP": 0,
+          "paymentMethod": "debit"
+        }
+      ],
+      "cashPocketMonthly": 12500
+    }
+  },
+  "loans": [
+    {
+      "id": "car-loan-1",
+      "name": "Car Loan",
+      "principal": 1850000,
+      "monthlyPayment": 42910,
+      "startYear": 2025,
+      "startMonth": 9,
+      "firstPaymentYear": 2025,
+      "firstPaymentMonth": 11
+    }
+  ],
+  "credit": [],
+  "trips": [],
+  "exportedAt": "2026-03-03T23:01:35.890Z"
+}
