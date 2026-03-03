@@ -20,6 +20,10 @@
 
   const $ = (id) => document.getElementById(id);
 
+  // Optional: set once here so the app works on all devices and when shared (no Settings needed).
+  // WARNING: Anyone who can view this file or the app source can see the token. Use a token with repo scope only and regenerate it periodically.
+  const PFIS_GITHUB_DEFAULT = { token: '', repo: 'EgyptSeal/BUD' };
+
   function getDb() {
     return DE.loadDatabase();
   }
@@ -797,9 +801,16 @@
 
   function getGitHubConfig() {
     return {
-      token: localStorage.getItem(GITHUB_TOKEN_KEY) || '',
-      repo: (localStorage.getItem(GITHUB_REPO_KEY) || 'EgyptSeal/BUD').trim() || 'EgyptSeal/BUD'
+      token: localStorage.getItem(GITHUB_TOKEN_KEY) || PFIS_GITHUB_DEFAULT.token || '',
+      repo: (localStorage.getItem(GITHUB_REPO_KEY) || PFIS_GITHUB_DEFAULT.repo || 'EgyptSeal/BUD').trim() || 'EgyptSeal/BUD'
     };
+  }
+
+  function applyDefaultGitHubToStorage() {
+    if (PFIS_GITHUB_DEFAULT.token && !localStorage.getItem(GITHUB_TOKEN_KEY)) {
+      localStorage.setItem(GITHUB_TOKEN_KEY, PFIS_GITHUB_DEFAULT.token);
+      localStorage.setItem(GITHUB_REPO_KEY, PFIS_GITHUB_DEFAULT.repo || 'EgyptSeal/BUD');
+    }
   }
 
   function base64Encode(str) {
@@ -906,6 +917,7 @@
   function init() {
     applyThemeByTime();
     setInterval(applyThemeByTime, 60000);
+    applyDefaultGitHubToStorage();
     loadFromGitHubOnStartup().then(function () {
       fillYearMonthSelectors();
       const db = getDb();
