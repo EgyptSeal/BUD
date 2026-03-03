@@ -876,7 +876,7 @@
       return;
     }
     saveToGitHub(payload).then(function (ok) {
-      if (ok) alert('Saved to GitHub (database/backup.json).');
+      if (ok) alert('Saved to GitHub. On other devices click "Load from cloud" or refresh; it may take up to 1 min to see changes.');
       else alert('Could not save to GitHub.');
     }).catch(function (err) {
       const msg = err && err.message ? err.message : '';
@@ -908,24 +908,65 @@
     alert('Settings saved. Use Save to push backup to GitHub.');
   }
 
-  // --- Load backup from GitHub on startup (cloud = source of truth; localStorage is working copy)
-  function loadFromGitHubOnStartup() {
+  // --- Fetch latest backup: use Commits API then Contents at that SHA to avoid long CDN delay
+  var NO_CACHE = { cache: 'no-store', headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' } };
+  function fetchBackupFromGitHub() {
     const repo = (localStorage.getItem(GITHUB_REPO_KEY) || 'EgyptSeal/BUD').trim() || 'EgyptSeal/BUD';
-    const url = 'https://raw.githubusercontent.com/' + repo + '/main/database/backup.json?t=' + Date.now();
-    return fetch(url, { cache: 'no-store' })
-      .then(r => {
-        if (!r.ok) return null;
-        return r.json();
+    const path = 'database/backup.json';
+    const ts = Date.now();
+    const commitsUrl = 'https://api.github.com/repos/' + repo + '/commits?path=' + encodeURIComponent(path) + '&per_page=1&t=' + ts;
+    return fetch(commitsUrl, NO_CACHE)
+      .then(r => (!r.ok) ? null : r.json())
+      .then(function (commits) {
+        var ref = (commits && commits[0] && commits[0].sha) ? commits[0].sha : 'main';
+        return fetch('https://api.github.com/repos/' + repo + '/contents/' + path + '?ref=' + ref + '&t=' + ts, NO_CACHE);
       })
-      .then(payload => {
-        if (!payload || typeof payload !== 'object') return;
-        if (payload.database != null) localStorage.setItem(DE.STORAGE_KEY, JSON.stringify(payload.database));
-        if (payload.loans != null) localStorage.setItem(DE.LOANS_KEY, JSON.stringify(payload.loans));
-        if (payload.credit != null) localStorage.setItem(DE.CREDIT_KEY, JSON.stringify(payload.credit));
-        if (payload.trips != null) localStorage.setItem(DE.TRIPS_KEY, JSON.stringify(payload.trips));
-        return true;
+      .then(r => (r && r.ok) ? r.json() : null)
+      .then(function (apiRes) {
+        if (!apiRes || !apiRes.content) return null;
+        try {
+          var b64 = (apiRes.content || '').replace(/\n/g, '');
+          return JSON.parse(decodeURIComponent(escape(atob(b64))));
+        } catch (e) { return null; }
       })
-      .catch(() => null);
+      .catch(function () {
+        var fallback = 'https://api.github.com/repos/' + repo + '/contents/' + path + '?ref=main&t=' + Date.now();
+        return fetch(fallback, NO_CACHE).then(function (r) { return r.ok ? r.json() : null; }).then(function (apiRes) {
+          if (!apiRes || !apiRes.content) return null;
+          try {
+            var b64 = (apiRes.content || '').replace(/\n/g, '');
+            return JSON.parse(decodeURIComponent(escape(atob(b64))));
+          } catch (e) { return null; }
+        });
+      });
+  }
+
+  function applyBackupPayload(payload) {
+    if (!payload || typeof payload !== 'object') return false;
+    if (payload.database != null) localStorage.setItem(DE.STORAGE_KEY, JSON.stringify(payload.database));
+    if (payload.loans != null) localStorage.setItem(DE.LOANS_KEY, JSON.stringify(payload.loans));
+    if (payload.credit != null) localStorage.setItem(DE.CREDIT_KEY, JSON.stringify(payload.credit));
+    if (payload.trips != null) localStorage.setItem(DE.TRIPS_KEY, JSON.stringify(payload.trips));
+    return true;
+  }
+
+  function loadFromGitHubOnStartup() {
+    return fetchBackupFromGitHub().then(function (payload) {
+      return applyBackupPayload(payload) ? true : null;
+    });
+  }
+
+  function loadFromCloudAndRefresh() {
+    const btn = $('btn-load-cloud');
+    if (btn) btn.disabled = true;
+    fetchBackupFromGitHub().then(function (payload) {
+      if (applyBackupPayload(payload)) {
+        location.reload();
+      } else {
+        alert('Could not load from cloud. After saving on the other device, wait ~1 min then click "Load from cloud" again.');
+      }
+      if (btn) btn.disabled = false;
+    });
   }
 
   function resetAllData() {
@@ -994,6 +1035,7 @@
     if ($('btn-theme')) $('btn-theme').addEventListener('click', toggleTheme);
 
     if ($('btn-save-db')) $('btn-save-db').addEventListener('click', saveAllToDatabase);
+    if ($('btn-load-cloud')) $('btn-load-cloud').addEventListener('click', loadFromCloudAndRefresh);
     if ($('btn-reset-db')) $('btn-reset-db').addEventListener('click', resetAllData);
     if ($('btn-settings')) $('btn-settings').addEventListener('click', openSettingsModal);
     if ($('settings-save')) $('settings-save').addEventListener('click', saveGitHubSettings);
