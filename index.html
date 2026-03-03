@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hossam Hegazi's Personal Budget</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="header-brand">
+        <span class="logo-icon">💰</span>
+        <span class="logo-text">Hossam Hegazi's Budget</span>
+      </div>
+      <nav class="header-tabs" role="tablist">
+        <button type="button" class="tab-btn active" data-tab="dashboard">Dashboard</button>
+        <button type="button" class="tab-btn" data-tab="loans">Loan</button>
+        <button type="button" class="tab-btn" data-tab="credit">Credit Card</button>
+        <button type="button" class="tab-btn" data-tab="travel">Travel</button>
+      </nav>
+      <div class="header-utils">
+        <button type="button" class="icon-btn" id="btn-theme" title="Theme">Theme</button>
+        <div class="header-db-actions">
+          <button type="button" class="icon-btn" id="btn-save-db" title="Save all data to file">Save</button>
+          <button type="button" class="icon-btn" id="btn-reset-db" title="Reset all data to defaults">Reset</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="main">
+      <div id="pane-dashboard" class="tab-pane active">
+        <div class="dashboard-layout">
+          <!-- Left: Income box (click to edit) -->
+          <aside class="income-aside">
+            <div class="panel income-panel" id="income-panel">
+              <h2 class="panel-heading">Income</h2>
+              <div class="income-summary" id="income-summary">
+                <div class="income-row"><span>Gross</span><span id="disp-gross">—</span></div>
+                <div class="income-row deductions-label">Deductions (Mandatory)</div>
+                <div id="income-deductions-list"></div>
+                <div class="income-row"><span>Annual bonus</span><span id="disp-annual-bonus">—</span></div>
+                <div class="income-row"><span>Saving from last month</span><span id="disp-saving-last-month">—</span></div>
+                <div class="income-row net-row"><span>Net</span><span id="disp-net">—</span></div>
+              </div>
+              <button type="button" class="btn btn-primary btn-block" id="btn-edit-income">Edit &amp; update</button>
+            </div>
+            <div class="panel income-edit-panel" id="income-edit-panel" style="display:none">
+              <h2 class="panel-heading">Edit income</h2>
+              <label>Gross (EGP)</label>
+              <input type="number" id="input-gross" min="0" step="100" />
+              <label>Annual bonus (EGP)</label>
+              <input type="number" id="input-annual-bonus" min="0" step="100" value="0" placeholder="0" />
+              <label>Saving from last month (EGP)</label>
+              <input type="number" id="input-saving-last-month" min="0" step="100" value="0" placeholder="0" />
+              <div class="deductions-edit-label">Deductions (Mandatory)</div>
+              <div id="deductions-edit-list"></div>
+              <button type="button" class="btn btn-primary btn-block" id="btn-save-income">Update</button>
+              <button type="button" class="btn btn-ghost btn-block" id="btn-cancel-income">Cancel</button>
+            </div>
+            <div class="panel cash-pocket-panel" id="cash-pocket-panel">
+              <h2 class="panel-heading">Rent in cash (cash pocket)</h2>
+              <div class="cash-pocket-summary">
+                <div class="income-row"><span>Monthly (EGP)</span><span><input type="number" id="cash-pocket-monthly" min="0" step="100" value="12500" title="Rental from company" /></span></div>
+                <div class="income-row"><span>Remaining this month</span><span id="disp-cash-pocket-remaining">—</span></div>
+              </div>
+            </div>
+            <div class="panel atm-panel" id="atm-panel">
+              <h2 class="panel-heading">ATM withdrawal(s)</h2>
+              <p class="panel-desc">Add amount to create an Other → ATM (Debit) line. Cannot exceed remaining debit balance (income − debit spent) this month.</p>
+              <div class="atm-add-row">
+                <input type="number" id="atm-amount" min="0" step="100" placeholder="Amount EGP" />
+                <button type="button" class="btn btn-secondary" id="btn-atm-add">Add</button>
+              </div>
+            </div>
+          </aside>
+
+          <!-- Right: Month + category boxes full width -->
+          <div class="dashboard-main">
+            <div class="overview-row">
+              <div class="card"><span class="card-label">Spent</span><span class="card-value" id="overview-expense">—</span></div>
+              <div class="card"><span class="card-label">Remaining Debit balance / Saving</span><span class="card-value" id="overview-savings">—</span></div>
+              <div class="card"><span class="card-label">Savings Rate</span><span class="card-value" id="overview-rate">—%</span></div>
+              <div class="card"><span class="card-label">Total Savings</span><span class="card-value" id="overview-total-savings">—</span></div>
+              <div class="card card-health"><span class="card-label">Health</span><span class="health-badge" id="health-badge">—</span></div>
+              <div class="card card-travel" id="card-travel-wrap" style="display:none"><span class="card-label">Travel</span><span class="card-value" id="overview-travel">—</span></div>
+              <div class="card card-credit-tip" id="savings-negative-tip" style="display:none"><span class="card-label">💡 Use credit?</span><div id="savings-negative-tip-content" class="tip-content"></div></div>
+            </div>
+
+            <div class="panel month-panel">
+              <label>Month</label>
+              <select id="select-year"></select>
+              <select id="select-month"></select>
+              <button type="button" class="btn btn-secondary" id="btn-copy-prev">Copy previous month</button>
+            </div>
+
+            <!-- Category boxes: one rounded box per category, entries inside same border -->
+            <div class="category-grid" id="category-grid"></div>
+
+            <!-- Charts: pie %, spend trend, savings trend, bar -->
+            <div class="charts-section">
+              <div class="panel panel-pie">
+                <h3 class="panel-heading">Spend by category (%)</h3>
+                <div class="chart-container"><canvas id="chart-pie"></canvas></div>
+              </div>
+              <div class="panel">
+                <h3 class="panel-heading">Monthly spend trend</h3>
+                <div class="chart-container"><canvas id="chart-spend"></canvas></div>
+              </div>
+              <div class="panel">
+                <h3 class="panel-heading">Monthly savings trend</h3>
+                <div class="chart-container"><canvas id="chart-savings"></canvas></div>
+              </div>
+              <div class="panel">
+                <h3 class="panel-heading">Spend by category</h3>
+                <div class="chart-container"><canvas id="chart-bar"></canvas></div>
+              </div>
+            </div>
+
+            <!-- Tips -->
+            <div class="panel panel-hints">
+              <h2 class="panel-heading">💡 Tips</h2>
+              <div id="ai-insights"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="pane-loans" class="tab-pane">
+        <div class="panel">
+          <h2 class="panel-heading">📋 Car loan</h2>
+          <p class="panel-desc">Total 1,850,000 EGP. Loan taken Sept 2025; first payment Nov 2025 (42,910 EGP/month). Remaining updates by month from the payment you enter in Dashboard → Loans.</p>
+          <div id="loan-summary"></div>
+        </div>
+      </div>
+
+      <div id="pane-credit" class="tab-pane">
+        <div class="panel">
+          <h2 class="panel-heading">💳 Credit cards</h2>
+          <p class="panel-desc">Available is computed from Dashboard spend (Pay with = Credit). Only limit and interest rate are editable. Default rate reflects typical Egypt issuer rates.</p>
+          <div id="credit-cards-list"></div>
+          <button type="button" class="btn btn-secondary" id="btn-add-credit-card">+ Add new card</button>
+        </div>
+        <div class="panel credit-status-panel">
+          <h3 class="panel-heading">Status &amp; report</h3>
+          <div id="credit-status-report"></div>
+        </div>
+      </div>
+
+      <div id="pane-travel" class="tab-pane">
+        <div class="panel">
+          <h2 class="panel-heading">✈️ Travel planning</h2>
+          <p class="panel-desc">Add a trip with expected expenses. Save to update your budget.</p>
+          <button type="button" class="btn btn-primary" id="btn-add-trip">Add trip</button>
+          <div id="trips-list"></div>
+        </div>
+        <div class="panel" id="trip-form-panel" style="display:none">
+          <h3 class="panel-heading">New trip</h3>
+          <div class="form-group">
+            <label>Trip name</label>
+            <input type="text" id="trip-name" placeholder="e.g. Summer 2026" />
+          </div>
+          <div class="form-group">
+            <label>Date / period</label>
+            <input type="text" id="trip-date" placeholder="e.g. Jul 2026" />
+          </div>
+          <div class="trip-expenses-label">Expenses</div>
+          <div id="trip-expenses-rows"></div>
+          <button type="button" class="btn btn-secondary" id="trip-add-expense">+ Add expense line</button>
+          <div class="trip-form-actions">
+            <button type="button" class="btn btn-primary" id="trip-save">Save trip</button>
+            <button type="button" class="btn btn-ghost" id="trip-cancel">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="dataEngine.js"></script>
+  <script src="charts.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
