@@ -27,11 +27,33 @@
       <div class="header-utils">
         <button type="button" class="icon-btn" id="btn-theme" title="Theme">Theme</button>
         <div class="header-db-actions">
-          <button type="button" class="icon-btn" id="btn-save-db" title="Save all data to file">Save</button>
+          <button type="button" class="icon-btn" id="btn-save-db" title="Save all data to GitHub and download backup">Save</button>
           <button type="button" class="icon-btn" id="btn-reset-db" title="Reset all data to defaults">Reset</button>
+          <button type="button" class="icon-btn" id="btn-settings" title="GitHub token and repo">Settings</button>
         </div>
       </div>
     </header>
+
+    <!-- Settings modal: GitHub token + repo -->
+    <div id="settings-modal" class="modal" style="display:none" aria-hidden="true">
+      <div class="modal-backdrop" id="settings-backdrop"></div>
+      <div class="modal-content">
+        <h3 class="panel-heading">Settings — Save to GitHub</h3>
+        <p class="panel-desc">Save stores your backup on GitHub. Enter a Personal Access Token with <code>repo</code> scope. Token is stored in this browser only.</p>
+        <div class="form-group">
+          <label>GitHub repo (owner/repo)</label>
+          <input type="text" id="settings-repo" placeholder="EgyptSeal/BUD" value="EgyptSeal/BUD" />
+        </div>
+        <div class="form-group">
+          <label>Personal Access Token</label>
+          <input type="password" id="settings-token" placeholder="ghp_xxxx..." autocomplete="off" />
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-primary" id="settings-save">Save settings</button>
+          <button type="button" class="btn btn-ghost" id="settings-cancel">Cancel</button>
+        </div>
+      </div>
+    </div>
 
     <main class="main">
       <div id="pane-dashboard" class="tab-pane active">

@@ -791,7 +791,47 @@
     html.setAttribute('data-theme', isDark ? 'light' : 'dark');
   }
 
-  // --- Save / Reset: export all data to file; reset to defaults with confirmation
+  // --- GitHub backup: save payload to repo as database/backup.json
+  const GITHUB_TOKEN_KEY = 'pfis_github_token';
+  const GITHUB_REPO_KEY = 'pfis_github_repo';
+
+  function getGitHubConfig() {
+    return {
+      token: localStorage.getItem(GITHUB_TOKEN_KEY) || '',
+      repo: (localStorage.getItem(GITHUB_REPO_KEY) || 'EgyptSeal/BUD').trim() || 'EgyptSeal/BUD'
+    };
+  }
+
+  function base64Encode(str) {
+    return btoa(unescape(encodeURIComponent(str)));
+  }
+
+  function saveToGitHub(payload) {
+    const { token, repo } = getGitHubConfig();
+    if (!token || !repo) return Promise.resolve(false);
+    const path = 'database/backup.json';
+    const url = 'https://api.github.com/repos/' + repo + '/contents/' + path;
+    const content = base64Encode(JSON.stringify(payload, null, 2));
+    const message = 'Backup ' + new Date().toISOString();
+    const headers = {
+      'Authorization': 'token ' + token,
+      'Accept': 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json'
+    };
+    return fetch(url, { method: 'GET', headers: headers })
+      .then(r => r.status === 200 ? r.json() : null)
+      .then(file => {
+        const body = { message: message, content: content };
+        if (file && file.sha) body.sha = file.sha;
+        return fetch(url, { method: 'PUT', headers: headers, body: JSON.stringify(body) });
+      })
+      .then(r => {
+        if (!r.ok) return r.json().then(err => { throw new Error(err.message || 'GitHub save failed'); });
+        return true;
+      });
+  }
+
+  // --- Save: push to GitHub (if token set) then download backup locally
   function saveAllToDatabase() {
     const payload = {
       database: JSON.parse(localStorage.getItem(DE.STORAGE_KEY) || '{}'),
@@ -800,6 +840,17 @@
       trips: JSON.parse(localStorage.getItem(DE.TRIPS_KEY) || '[]'),
       exportedAt: new Date().toISOString()
     };
+    const { token } = getGitHubConfig();
+    if (token) {
+      saveToGitHub(payload).then(function (ok) {
+        if (ok) alert('Saved to GitHub (database/backup.json).');
+        else alert('Could not save to GitHub.');
+      }).catch(function (err) {
+        alert('GitHub save failed: ' + (err && err.message ? err.message : err));
+      });
+    } else {
+      alert('Open Settings and add your GitHub Personal Access Token so Save can store the backup on GitHub.');
+    }
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -808,6 +859,26 @@
     a.download = 'database/backup-' + d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0') + '.json';
     a.click();
     URL.revokeObjectURL(url);
+  }
+
+  function openSettingsModal() {
+    const cfg = getGitHubConfig();
+    if ($('settings-repo')) $('settings-repo').value = cfg.repo;
+    if ($('settings-token')) $('settings-token').value = cfg.token;
+    if ($('settings-modal')) $('settings-modal').style.display = 'flex';
+  }
+
+  function closeSettingsModal() {
+    if ($('settings-modal')) $('settings-modal').style.display = 'none';
+  }
+
+  function saveGitHubSettings() {
+    const repo = ($('settings-repo') && $('settings-repo').value.trim()) || 'EgyptSeal/BUD';
+    const token = ($('settings-token') && $('settings-token').value) ? $('settings-token').value.trim() : '';
+    localStorage.setItem(GITHUB_REPO_KEY, repo);
+    localStorage.setItem(GITHUB_TOKEN_KEY, token);
+    closeSettingsModal();
+    alert('Settings saved. Use Save to push backup to GitHub.');
   }
 
   function resetAllData() {
@@ -875,6 +946,10 @@
 
     if ($('btn-save-db')) $('btn-save-db').addEventListener('click', saveAllToDatabase);
     if ($('btn-reset-db')) $('btn-reset-db').addEventListener('click', resetAllData);
+    if ($('btn-settings')) $('btn-settings').addEventListener('click', openSettingsModal);
+    if ($('settings-save')) $('settings-save').addEventListener('click', saveGitHubSettings);
+    if ($('settings-cancel')) $('settings-cancel').addEventListener('click', closeSettingsModal);
+    if ($('settings-backdrop')) $('settings-backdrop').addEventListener('click', closeSettingsModal);
 
     const cashInput = $('cash-pocket-monthly');
     if (cashInput) {
