@@ -846,8 +846,23 @@
       });
   }
 
+  // --- Sync current form values to localStorage before Save (so unsaved input changes are included)
+  function syncFormToStorage() {
+    const grid = $('category-grid');
+    if (grid) {
+      grid.querySelectorAll('input[data-field], select[data-field]').forEach(function (el) {
+        persistExpenseField(el);
+      });
+    }
+    refreshOverviewAndCharts();
+    refreshTips();
+    renderIncomeSummary();
+    renderCashPocketPanel();
+  }
+
   // --- Save: push backup to GitHub only (cloud)
   function saveAllToDatabase() {
+    syncFormToStorage();
     const payload = {
       database: JSON.parse(localStorage.getItem(DE.STORAGE_KEY) || '{}'),
       loans: JSON.parse(localStorage.getItem(DE.LOANS_KEY) || '[]'),
