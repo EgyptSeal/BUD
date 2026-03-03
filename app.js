@@ -20,8 +20,8 @@
 
   const $ = (id) => document.getElementById(id);
 
-  // Optional: set once here so the app works on all devices and when shared (no Settings needed).
-  // WARNING: Anyone who can view this file or the app source can see the token. Use a token with repo scope only and regenerate it periodically.
+  // --- GitHub token: set here once so the app works on all devices (or leave empty and use Settings).
+  // GitHub blocks pushes that contain tokens; if you add one here, use the repo's "allow secret" link when push is blocked.
   const PFIS_GITHUB_DEFAULT = { token: '', repo: 'EgyptSeal/BUD' };
 
   function getDb() {
@@ -830,13 +830,17 @@
       'Content-Type': 'application/json'
     };
     return fetch(url, { method: 'GET', headers: headers })
-      .then(r => r.status === 200 ? r.json() : null)
+      .then(r => {
+        if (r.status === 401) return r.json().then(() => { throw new Error('TOKEN_EXPIRED'); });
+        return r.status === 200 ? r.json() : null;
+      })
       .then(file => {
         const body = { message: message, content: content };
         if (file && file.sha) body.sha = file.sha;
         return fetch(url, { method: 'PUT', headers: headers, body: JSON.stringify(body) });
       })
       .then(r => {
+        if (r.status === 401) return r.json().then(() => { throw new Error('TOKEN_EXPIRED'); });
         if (!r.ok) return r.json().then(err => { throw new Error(err.message || 'GitHub save failed'); });
         return true;
       });
@@ -860,7 +864,12 @@
       if (ok) alert('Saved to GitHub (database/backup.json).');
       else alert('Could not save to GitHub.');
     }).catch(function (err) {
-      alert('GitHub save failed: ' + (err && err.message ? err.message : err));
+      const msg = err && err.message ? err.message : '';
+      if (msg === 'TOKEN_EXPIRED') {
+        alert('Your GitHub token has expired or is invalid.\n\nCreate a new token: GitHub.com → your profile → Settings → Developer settings → Personal access tokens → Generate new token (classic), enable "repo", then copy it.\n\nUpdate the token in app.js: find PFIS_GITHUB_DEFAULT and replace the token value, then push to GitHub.');
+      } else {
+        alert('GitHub save failed: ' + msg);
+      }
     });
   }
 
