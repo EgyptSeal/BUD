@@ -22,7 +22,7 @@
 
   // --- GitHub token: set here once so the app works on all devices. No one can change it in the app.
   // When you push, GitHub may block; go to the link in the error and choose "Allow secret" to unblock.
-  const PFIS_GITHUB_DEFAULT = { token: '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', repo: 'EgyptSeal/BUD' };
+  const PFIS_GITHUB_DEFAULT = { token: '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', repo: 'EgyptSeal/BUD' };
 
   function getDb() {
     return DE.loadDatabase();
@@ -876,6 +876,7 @@
   function openSettingsModal() {
     const cfg = getGitHubConfig();
     if ($('settings-repo')) $('settings-repo').value = cfg.repo;
+    if ($('settings-token')) $('settings-token').value = cfg.token;
     if ($('settings-modal')) $('settings-modal').style.display = 'flex';
   }
 
@@ -885,9 +886,11 @@
 
   function saveGitHubSettings() {
     const repo = ($('settings-repo') && $('settings-repo').value.trim()) || 'EgyptSeal/BUD';
+    const token = ($('settings-token') && $('settings-token').value) ? $('settings-token').value.trim() : '';
     localStorage.setItem(GITHUB_REPO_KEY, repo);
+    localStorage.setItem(GITHUB_TOKEN_KEY, token);
     closeSettingsModal();
-    alert('Settings saved. Token cannot be changed by users; only the app owner can set it in the code.');
+    alert('Settings saved. Use Save to push backup to GitHub.');
   }
 
   // --- Load backup from GitHub on startup (cloud = source of truth; localStorage is working copy)
