@@ -908,37 +908,38 @@
     alert('Settings saved. Use Save to push backup to GitHub.');
   }
 
-  // --- Fetch latest backup: use Commits API then Contents at that SHA to avoid long CDN delay
+  // --- Fetch latest backup: try raw URL first (works when API is blocked), then API; never reject
   var NO_CACHE = { cache: 'no-store', headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' } };
   function fetchBackupFromGitHub() {
-    const repo = (localStorage.getItem(GITHUB_REPO_KEY) || 'EgyptSeal/BUD').trim() || 'EgyptSeal/BUD';
-    const path = 'database/backup.json';
-    const ts = Date.now();
-    const commitsUrl = 'https://api.github.com/repos/' + repo + '/commits?path=' + encodeURIComponent(path) + '&per_page=1&t=' + ts;
-    return fetch(commitsUrl, NO_CACHE)
-      .then(r => (!r.ok) ? null : r.json())
-      .then(function (commits) {
-        var ref = (commits && commits[0] && commits[0].sha) ? commits[0].sha : 'main';
-        return fetch('https://api.github.com/repos/' + repo + '/contents/' + path + '?ref=' + ref + '&t=' + ts, NO_CACHE);
+    var repo = (localStorage.getItem(GITHUB_REPO_KEY) || 'EgyptSeal/BUD').trim() || 'EgyptSeal/BUD';
+    var path = 'database/backup.json';
+    var ts = Date.now();
+    var rawUrl = 'https://raw.githubusercontent.com/' + repo + '/main/' + path + '?t=' + ts;
+    var apiContents = 'https://api.github.com/repos/' + repo + '/contents/' + path + '?ref=main&t=' + ts;
+
+    function parseJson(text) {
+      try { return text ? JSON.parse(text) : null; } catch (e) { return null; }
+    }
+    function fromApiText(text) {
+      var apiRes = parseJson(text);
+      if (!apiRes || !apiRes.content) return null;
+      try {
+        var b64 = (apiRes.content || '').replace(/\n/g, '');
+        return JSON.parse(decodeURIComponent(escape(atob(b64))));
+      } catch (e) { return null; }
+    }
+
+    return fetch(rawUrl, NO_CACHE)
+      .then(function (r) { return r.ok ? r.text() : null; }, function () { return null; })
+      .then(function (text) { return parseJson(text); })
+      .then(function (payload) {
+        if (payload && typeof payload === 'object') return payload;
+        return fetch(apiContents, NO_CACHE)
+          .then(function (r) { return r.ok ? r.text() : null; }, function () { return null; })
+          .then(fromApiText);
       })
-      .then(r => (r && r.ok) ? r.json() : null)
-      .then(function (apiRes) {
-        if (!apiRes || !apiRes.content) return null;
-        try {
-          var b64 = (apiRes.content || '').replace(/\n/g, '');
-          return JSON.parse(decodeURIComponent(escape(atob(b64))));
-        } catch (e) { return null; }
-      })
-      .catch(function () {
-        var fallback = 'https://api.github.com/repos/' + repo + '/contents/' + path + '?ref=main&t=' + Date.now();
-        return fetch(fallback, NO_CACHE).then(function (r) { return r.ok ? r.json() : null; }).then(function (apiRes) {
-          if (!apiRes || !apiRes.content) return null;
-          try {
-            var b64 = (apiRes.content || '').replace(/\n/g, '');
-            return JSON.parse(decodeURIComponent(escape(atob(b64))));
-          } catch (e) { return null; }
-        });
-      });
+      .then(function (p) { return p || null; })
+      .catch(function () { return null; });
   }
 
   function applyBackupPayload(payload) {
@@ -966,10 +967,10 @@
           location.reload();
           return;
         }
-        alert('Could not load from cloud. After saving on the other device, wait ~1 min then click "Load from cloud" again.');
+        alert('Could not load from cloud. Check: (1) Repo in Settings is exactly EgyptSeal/BUD (2) You clicked Save at least once so database/backup.json exists in the repo. Then try again.');
       })
-      .catch(function (err) {
-        alert('Load from cloud failed. Check the repo in Settings and try again.');
+      .catch(function () {
+        alert('Could not load from cloud. Check: (1) Repo in Settings is exactly EgyptSeal/BUD (2) You clicked Save at least once so database/backup.json exists in the repo. Then try again.');
       })
       .then(function () {
         if (btn) { btn.disabled = false; btn.textContent = oldText; }
