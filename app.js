@@ -978,50 +978,41 @@
     location.reload();
   }
 
-  // --- Init: load from GitHub first (cloud = source of truth), then run UI
+  // --- Init: attach all button listeners FIRST so cloud and slow networks never leave app unclickable
   function init() {
-    applyThemeByTime();
-    setInterval(applyThemeByTime, 60000);
-    applyDefaultGitHubToStorage();
-    loadFromGitHubOnStartup().then(function () {
-      fillYearMonthSelectors();
-      const db = getDb();
-      loadMonthIntoUI();
-      renderLoanSummary();
-
-      const selectYear = $('select-year');
-    const selectMonth = $('select-month');
+    var selectYear = $('select-year');
+    var selectMonth = $('select-month');
     if (selectYear) selectYear.addEventListener('change', onYearMonthChange);
     if (selectMonth) selectMonth.addEventListener('change', onYearMonthChange);
 
     if ($('btn-edit-income')) $('btn-edit-income').addEventListener('click', showIncomeEdit);
     if ($('btn-save-income')) $('btn-save-income').addEventListener('click', saveIncomeFromEdit);
     if ($('btn-cancel-income')) $('btn-cancel-income').addEventListener('click', cancelIncomeEdit);
-
     if ($('btn-copy-prev')) $('btn-copy-prev').addEventListener('click', copyPreviousMonth);
 
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab')));
-    });
+    var tabList = document.querySelectorAll('.tab-btn');
+    for (var i = 0; i < tabList.length; i++) {
+      (function (btn) { btn.addEventListener('click', function () { switchTab(btn.getAttribute('data-tab')); }); })(tabList[i]);
+    }
 
     if ($('btn-add-credit-card')) $('btn-add-credit-card').addEventListener('click', function () {
       DE.addCreditCard();
       loadCreditIntoUI();
     });
     if ($('btn-atm-add')) $('btn-atm-add').addEventListener('click', function () {
-      const amt = Number($('atm-amount') && $('atm-amount').value) || 0;
+      var amt = Number($('atm-amount') && $('atm-amount').value) || 0;
       if (amt <= 0) return;
-      const income = getIncome();
-      const expenses = getExpenses();
-      const debitSpent = DE.totalSpentByPaymentMethod ? DE.totalSpentByPaymentMethod(expenses, 'debit') : 0;
-      const remainingDebit = Math.max(0, income - debitSpent);
-      const toAdd = Math.min(amt, remainingDebit);
+      var income = getIncome();
+      var expenses = getExpenses();
+      var debitSpent = DE.totalSpentByPaymentMethod ? DE.totalSpentByPaymentMethod(expenses, 'debit') : 0;
+      var remainingDebit = Math.max(0, income - debitSpent);
+      var toAdd = Math.min(amt, remainingDebit);
       if (toAdd <= 0) {
         alert('Remaining debit balance is ' + formatMoney(remainingDebit) + ' EGP. You cannot withdraw more than your total debit income this month.');
         return;
       }
       if (toAdd < amt) alert('Capped to remaining debit balance: ' + formatMoney(toAdd) + ' EGP.');
-      const db = getDb();
+      var db = getDb();
       DE.addExpenseRow(db, currentYear, currentMonth, { category: 'Other', subcategory: 'ATM withdrawal', spent: toAdd, amount: toAdd, currency: 'EGP', amountEGP: toAdd, paymentMethod: 'debit' });
       if ($('atm-amount')) $('atm-amount').value = '';
       loadMonthIntoUI();
@@ -1031,9 +1022,7 @@
     if ($('trip-add-expense')) $('trip-add-expense').addEventListener('click', addTripExpenseRow);
     if ($('trip-save')) $('trip-save').addEventListener('click', saveTripFromForm);
     if ($('trip-cancel')) $('trip-cancel').addEventListener('click', cancelTripForm);
-
     if ($('btn-theme')) $('btn-theme').addEventListener('click', toggleTheme);
-
     if ($('btn-save-db')) $('btn-save-db').addEventListener('click', saveAllToDatabase);
     if ($('btn-load-cloud')) $('btn-load-cloud').addEventListener('click', loadFromCloudAndRefresh);
     if ($('btn-reset-db')) $('btn-reset-db').addEventListener('click', resetAllData);
@@ -1042,15 +1031,35 @@
     if ($('settings-cancel')) $('settings-cancel').addEventListener('click', closeSettingsModal);
     if ($('settings-backdrop')) $('settings-backdrop').addEventListener('click', closeSettingsModal);
 
-    const cashInput = $('cash-pocket-monthly');
+    var cashInput = $('cash-pocket-monthly');
     if (cashInput) {
       cashInput.addEventListener('change', function () {
-        const db = getDb();
-        const val = Number(this.value) || 0;
+        var db = getDb();
+        var val = Number(this.value) || 0;
         if (DE.setCashPocketMonthly) DE.setCashPocketMonthly(db, currentYear, currentMonth, val);
         renderIncomeSummary();
       });
     }
+
+    try {
+      applyThemeByTime();
+      setInterval(applyThemeByTime, 60000);
+      applyDefaultGitHubToStorage();
+      fillYearMonthSelectors();
+      loadMonthIntoUI();
+      renderLoanSummary();
+    } catch (e) {
+      if (typeof console !== 'undefined' && console.error) console.error('Budget app init:', e);
+    }
+
+    loadFromGitHubOnStartup().then(function (applied) {
+      if (applied) {
+        try {
+          fillYearMonthSelectors();
+          loadMonthIntoUI();
+          renderLoanSummary();
+        } catch (err) {}
+      }
     });
   }
 
