@@ -20,9 +20,9 @@
 
   const $ = (id) => document.getElementById(id);
 
-  // --- GitHub token: set here once so the app works on all devices (or leave empty and use Settings).
-  // GitHub blocks pushes that contain tokens; if you add one here, use the repo's "allow secret" link when push is blocked.
-  const PFIS_GITHUB_DEFAULT = { token: '', repo: 'EgyptSeal/BUD' };
+  // --- GitHub token: set here once so the app works on all devices. No one can change it in the app.
+  // When you push, GitHub may block; go to the link in the error and choose "Allow secret" to unblock.
+  const PFIS_GITHUB_DEFAULT = { token: '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', repo: 'EgyptSeal/BUD' };
 
   function getDb() {
     return DE.loadDatabase();
