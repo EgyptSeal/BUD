@@ -20,9 +20,9 @@
 
   const $ = (id) => document.getElementById(id);
 
-  // --- GitHub token: set here once so the app works on all devices. No one can change it in the app.
-  // When you push, GitHub may block; go to the link in the error and choose "Allow secret" to unblock.
-  const PFIS_GITHUB_DEFAULT = { token: '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', repo: 'EgyptSeal/BUD' };
+  // --- GitHub token: leave empty here. If you put it in code and push, GitHub may revoke it when you "allow secret".
+  // Use Settings in the app to enter your token on each device; it stays until you change it or it expires.
+  const PFIS_GITHUB_DEFAULT = { token: '', repo: 'EgyptSeal/BUD' };
 
   function getDb() {
     return DE.loadDatabase();
@@ -896,8 +896,8 @@
   // --- Load backup from GitHub on startup (cloud = source of truth; localStorage is working copy)
   function loadFromGitHubOnStartup() {
     const repo = (localStorage.getItem(GITHUB_REPO_KEY) || 'EgyptSeal/BUD').trim() || 'EgyptSeal/BUD';
-    const url = 'https://raw.githubusercontent.com/' + repo + '/main/database/backup.json';
-    return fetch(url)
+    const url = 'https://raw.githubusercontent.com/' + repo + '/main/database/backup.json?t=' + Date.now();
+    return fetch(url, { cache: 'no-store' })
       .then(r => {
         if (!r.ok) return null;
         return r.json();
