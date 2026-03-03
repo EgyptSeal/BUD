@@ -831,7 +831,7 @@
       });
   }
 
-  // --- Save: push to GitHub (if token set) then download backup locally
+  // --- Save: push backup to GitHub only (cloud)
   function saveAllToDatabase() {
     const payload = {
       database: JSON.parse(localStorage.getItem(DE.STORAGE_KEY) || '{}'),
@@ -841,24 +841,16 @@
       exportedAt: new Date().toISOString()
     };
     const { token } = getGitHubConfig();
-    if (token) {
-      saveToGitHub(payload).then(function (ok) {
-        if (ok) alert('Saved to GitHub (database/backup.json).');
-        else alert('Could not save to GitHub.');
-      }).catch(function (err) {
-        alert('GitHub save failed: ' + (err && err.message ? err.message : err));
-      });
-    } else {
+    if (!token) {
       alert('Open Settings and add your GitHub Personal Access Token so Save can store the backup on GitHub.');
+      return;
     }
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    const d = new Date();
-    a.download = 'database/backup-' + d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0') + '.json';
-    a.click();
-    URL.revokeObjectURL(url);
+    saveToGitHub(payload).then(function (ok) {
+      if (ok) alert('Saved to GitHub (database/backup.json).');
+      else alert('Could not save to GitHub.');
+    }).catch(function (err) {
+      alert('GitHub save failed: ' + (err && err.message ? err.message : err));
+    });
   }
 
   function openSettingsModal() {
