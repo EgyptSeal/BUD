@@ -957,16 +957,23 @@
   }
 
   function loadFromCloudAndRefresh() {
-    const btn = $('btn-load-cloud');
-    if (btn) btn.disabled = true;
-    fetchBackupFromGitHub().then(function (payload) {
-      if (applyBackupPayload(payload)) {
-        location.reload();
-      } else {
+    var btn = $('btn-load-cloud');
+    var oldText = btn ? btn.textContent : '';
+    if (btn) { btn.disabled = true; btn.textContent = 'Loading…'; }
+    fetchBackupFromGitHub()
+      .then(function (payload) {
+        if (applyBackupPayload(payload)) {
+          location.reload();
+          return;
+        }
         alert('Could not load from cloud. After saving on the other device, wait ~1 min then click "Load from cloud" again.');
-      }
-      if (btn) btn.disabled = false;
-    });
+      })
+      .catch(function (err) {
+        alert('Load from cloud failed. Check the repo in Settings and try again.');
+      })
+      .then(function () {
+        if (btn) { btn.disabled = false; btn.textContent = oldText; }
+      });
   }
 
   function resetAllData() {
