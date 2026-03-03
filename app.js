@@ -873,6 +873,26 @@
     alert('Settings saved. Use Save to push backup to GitHub.');
   }
 
+  // --- Load backup from GitHub on startup (cloud = source of truth; localStorage is working copy)
+  function loadFromGitHubOnStartup() {
+    const repo = (localStorage.getItem(GITHUB_REPO_KEY) || 'EgyptSeal/BUD').trim() || 'EgyptSeal/BUD';
+    const url = 'https://raw.githubusercontent.com/' + repo + '/main/database/backup.json';
+    return fetch(url)
+      .then(r => {
+        if (!r.ok) return null;
+        return r.json();
+      })
+      .then(payload => {
+        if (!payload || typeof payload !== 'object') return;
+        if (payload.database != null) localStorage.setItem(DE.STORAGE_KEY, JSON.stringify(payload.database));
+        if (payload.loans != null) localStorage.setItem(DE.LOANS_KEY, JSON.stringify(payload.loans));
+        if (payload.credit != null) localStorage.setItem(DE.CREDIT_KEY, JSON.stringify(payload.credit));
+        if (payload.trips != null) localStorage.setItem(DE.TRIPS_KEY, JSON.stringify(payload.trips));
+        return true;
+      })
+      .catch(() => null);
+  }
+
   function resetAllData() {
     if (!confirm('Reset all data to default values? This cannot be undone.')) return;
     localStorage.removeItem(DE.STORAGE_KEY);
@@ -882,16 +902,17 @@
     location.reload();
   }
 
-  // --- Init: no history — app starts from current month (March 2026) only
+  // --- Init: load from GitHub first (cloud = source of truth), then run UI
   function init() {
     applyThemeByTime();
     setInterval(applyThemeByTime, 60000);
-    fillYearMonthSelectors();
-    const db = getDb();
-    loadMonthIntoUI();
-    renderLoanSummary();
+    loadFromGitHubOnStartup().then(function () {
+      fillYearMonthSelectors();
+      const db = getDb();
+      loadMonthIntoUI();
+      renderLoanSummary();
 
-    const selectYear = $('select-year');
+      const selectYear = $('select-year');
     const selectMonth = $('select-month');
     if (selectYear) selectYear.addEventListener('change', onYearMonthChange);
     if (selectMonth) selectMonth.addEventListener('change', onYearMonthChange);
@@ -952,6 +973,7 @@
         renderIncomeSummary();
       });
     }
+    });
   }
 
   if (document.readyState === 'loading') {
