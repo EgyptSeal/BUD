@@ -876,7 +876,6 @@
   function openSettingsModal() {
     const cfg = getGitHubConfig();
     if ($('settings-repo')) $('settings-repo').value = cfg.repo;
-    if ($('settings-token')) $('settings-token').value = cfg.token;
     if ($('settings-modal')) $('settings-modal').style.display = 'flex';
   }
 
@@ -886,11 +885,9 @@
 
   function saveGitHubSettings() {
     const repo = ($('settings-repo') && $('settings-repo').value.trim()) || 'EgyptSeal/BUD';
-    const token = ($('settings-token') && $('settings-token').value) ? $('settings-token').value.trim() : '';
     localStorage.setItem(GITHUB_REPO_KEY, repo);
-    localStorage.setItem(GITHUB_TOKEN_KEY, token);
     closeSettingsModal();
-    alert('Settings saved. Use Save to push backup to GitHub.');
+    alert('Settings saved. Token cannot be changed by users; only the app owner can set it in the code.');
   }
 
   // --- Load backup from GitHub on startup (cloud = source of truth; localStorage is working copy)
