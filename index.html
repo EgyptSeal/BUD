@@ -8,6 +8,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+  <script>
+    window.addEventListener('error', function(e) {
+      var src = (e.target && (e.target.src || e.target.href || ''));
+      if (e.target && (e.target.tagName === 'SCRIPT' || e.target.tagName === 'LINK') && src && !/cdn\.|cloudflare|google/.test(src)) {
+        document.body.innerHTML = '<div style="padding:2rem;font-family:sans-serif;max-width:480px;margin:0 auto;"><h2>Loading failed</h2><p>A local file did not load. In your repo put <strong>index.html</strong>, <strong>app.js</strong>, <strong>dataEngine.js</strong>, <strong>charts.js</strong> and <strong>style.css</strong> in the same folder (repo root). Push, wait 1–2 min, then hard refresh (Ctrl+Shift+R).</p></div>';
+      }
+    }, true);
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
@@ -204,8 +212,8 @@
     </main>
   </div>
 
-  <script src="dataEngine.js?v=2"></script>
-  <script src="charts.js?v=2"></script>
-  <script src="app.js?v=2"></script>
+  <script src="dataEngine.js?v=3"></script>
+  <script src="charts.js?v=3"></script>
+  <script src="app.js?v=3"></script>
 </body>
 </html>
