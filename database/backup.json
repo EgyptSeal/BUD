@@ -58,10 +58,10 @@
         {
           "category": "Apartment",
           "subcategory": "N. Gas",
-          "spent": 151,
-          "amount": 151,
+          "spent": 0,
+          "amount": 0,
           "currency": "EGP",
-          "amountEGP": 151,
+          "amountEGP": 0,
           "paymentMethod": "debit"
         },
         {
@@ -319,10 +319,19 @@
         {
           "category": "Utilities",
           "subcategory": "Mobile Bill",
-          "spent": 1030,
-          "amount": 1030,
+          "spent": 881,
+          "amount": 881,
           "currency": "EGP",
-          "amountEGP": 1030,
+          "amountEGP": 881,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Other",
+          "subcategory": "Charity giving",
+          "spent": 1500,
+          "amount": 1500,
+          "currency": "EGP",
+          "amountEGP": 1500,
           "paymentMethod": "debit"
         },
         {
@@ -361,5 +370,5 @@
   ],
   "credit": [],
   "trips": [],
-  "exportedAt": "2026-03-04T06:03:25.583Z"
+  "exportedAt": "2026-03-04T06:05:20.166Z"
 }
