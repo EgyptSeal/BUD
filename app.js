@@ -946,12 +946,22 @@
         .then(function (r) { return r.ok ? r.text() : null; }, function () { return null; })
         .then(fromApiText);
     }
+    function tryRawViaProxy(branch) {
+      var rawUrl = 'https://raw.githubusercontent.com/' + repo + '/' + branch + '/' + path + '?t=' + ts;
+      var proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(rawUrl);
+      return fetch(proxyUrl, NO_CACHE)
+        .then(function (r) { return r.ok ? r.text() : null; }, function () { return null; })
+        .then(function (text) { return parseJson(text); });
+    }
 
     return getDefaultBranch()
       .then(function (branch) {
         return tryRaw(branch).then(function (p) {
           if (p && typeof p === 'object') return p;
-          return tryApi(branch);
+          return tryApi(branch).then(function (p2) {
+            if (p2 && typeof p2 === 'object') return p2;
+            return tryRawViaProxy(branch);
+          });
         });
       })
       .then(function (p) { return p || null; })
