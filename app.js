@@ -908,7 +908,7 @@
     alert('Settings saved. Use Save to push backup to GitHub.');
   }
 
-  // --- Fetch latest backup: try raw URL (main then master), then API; never reject
+  // --- Fetch latest backup: get repo default branch first, then load file from that branch
   var NO_CACHE = { cache: 'no-store', headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' } };
   function fetchBackupFromGitHub() {
     var repo = (localStorage.getItem(GITHUB_REPO_KEY) || 'EgyptSeal/BUD').trim() || 'EgyptSeal/BUD';
@@ -926,6 +926,14 @@
         return JSON.parse(decodeURIComponent(escape(atob(b64))));
       } catch (e) { return null; }
     }
+    function getDefaultBranch() {
+      return fetch('https://api.github.com/repos/' + repo + '?t=' + ts, NO_CACHE)
+        .then(function (r) { return r.ok ? r.text() : null; }, function () { return null; })
+        .then(function (text) {
+          var data = parseJson(text);
+          return (data && data.default_branch) ? data.default_branch : 'main';
+        });
+    }
     function tryRaw(branch) {
       var url = 'https://raw.githubusercontent.com/' + repo + '/' + branch + '/' + path + '?t=' + ts;
       return fetch(url, NO_CACHE)
@@ -939,18 +947,12 @@
         .then(fromApiText);
     }
 
-    return tryRaw('main')
-      .then(function (payload) {
-        if (payload && typeof payload === 'object') return payload;
-        return tryRaw('master');
-      })
-      .then(function (payload) {
-        if (payload && typeof payload === 'object') return payload;
-        return tryApi('main');
-      })
-      .then(function (payload) {
-        if (payload && typeof payload === 'object') return payload;
-        return tryApi('master');
+    return getDefaultBranch()
+      .then(function (branch) {
+        return tryRaw(branch).then(function (p) {
+          if (p && typeof p === 'object') return p;
+          return tryApi(branch);
+        });
       })
       .then(function (p) { return p || null; })
       .catch(function () { return null; });
@@ -981,10 +983,10 @@
           location.reload();
           return;
         }
-        alert('Could not load from cloud. Check: (1) Repo in Settings is exactly EgyptSeal/BUD (2) You clicked Save at least once so database/backup.json exists in the repo. Then try again.');
+        alert('Could not load from cloud.\n\n1. In Settings set repo to exactly: EgyptSeal/BUD\n2. On a device where the app works: click Save once (so database/backup.json is created).\n3. On GitHub open the database folder and confirm backup.json is there.\nThen try Load from cloud again.');
       })
       .catch(function () {
-        alert('Could not load from cloud. Check: (1) Repo in Settings is exactly EgyptSeal/BUD (2) You clicked Save at least once so database/backup.json exists in the repo. Then try again.');
+        alert('Could not load from cloud.\n\n1. In Settings set repo to exactly: EgyptSeal/BUD\n2. On a device where the app works: click Save once (so database/backup.json is created).\n3. On GitHub open the database folder and confirm backup.json is there.\nThen try Load from cloud again.');
       })
       .then(function () {
         if (btn) { btn.disabled = false; btn.textContent = oldText; }
