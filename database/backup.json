@@ -48,15 +48,6 @@
         },
         {
           "category": "Apartment",
-          "subcategory": "Water",
-          "spent": 0,
-          "amount": 0,
-          "currency": "EGP",
-          "amountEGP": 0,
-          "paymentMethod": "debit"
-        },
-        {
-          "category": "Apartment",
           "subcategory": "N. Gas",
           "spent": 151,
           "amount": 151,
@@ -76,19 +67,10 @@
         {
           "category": "Apartment",
           "subcategory": "WE Internet",
-          "spent": 569,
-          "amount": 569,
+          "spent": 700,
+          "amount": 700,
           "currency": "EGP",
-          "amountEGP": 569,
-          "paymentMethod": "debit"
-        },
-        {
-          "category": "Apartment",
-          "subcategory": "Maintenance Diff.",
-          "spent": 0,
-          "amount": 0,
-          "currency": "EGP",
-          "amountEGP": 0,
+          "amountEGP": 700,
           "paymentMethod": "debit"
         },
         {
@@ -201,47 +183,11 @@
         },
         {
           "category": "Car",
-          "subcategory": "Service",
-          "spent": 0,
-          "amount": 0,
-          "currency": "EGP",
-          "amountEGP": 0,
-          "paymentMethod": "debit"
-        },
-        {
-          "category": "Car",
-          "subcategory": "EV charge",
-          "spent": 0,
-          "amount": 0,
-          "currency": "EGP",
-          "amountEGP": 0,
-          "paymentMethod": "debit"
-        },
-        {
-          "category": "Car",
-          "subcategory": "Addons",
-          "spent": 0,
-          "amount": 0,
-          "currency": "EGP",
-          "amountEGP": 0,
-          "paymentMethod": "debit"
-        },
-        {
-          "category": "Car",
-          "subcategory": "Accessories",
-          "spent": 0,
-          "amount": 0,
-          "currency": "EGP",
-          "amountEGP": 0,
-          "paymentMethod": "debit"
-        },
-        {
-          "category": "Car",
           "subcategory": "Cleaning",
-          "spent": 450,
-          "amount": 450,
+          "spent": 500,
+          "amount": 500,
           "currency": "EGP",
-          "amountEGP": 450,
+          "amountEGP": 500,
           "paymentMethod": "debit"
         },
         {
@@ -274,10 +220,10 @@
         {
           "category": "Food",
           "subcategory": "Coffee",
-          "spent": 3800,
-          "amount": 3800,
+          "spent": 4000,
+          "amount": 4000,
           "currency": "EGP",
-          "amountEGP": 3800,
+          "amountEGP": 4000,
           "paymentMethod": "debit"
         },
         {
@@ -292,10 +238,10 @@
         {
           "category": "Pet-Mylo",
           "subcategory": "Anti FL",
-          "spent": 3550,
-          "amount": 3550,
+          "spent": 3500,
+          "amount": 3500,
           "currency": "EGP",
-          "amountEGP": 3550,
+          "amountEGP": 3500,
           "paymentMethod": "debit"
         },
         {
@@ -325,5 +271,5 @@
   ],
   "credit": [],
   "trips": [],
-  "exportedAt": "2026-03-04T06:14:02.922Z"
+  "exportedAt": "2026-03-04T06:19:35.910Z"
 }
