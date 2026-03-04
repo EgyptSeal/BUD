@@ -908,14 +908,12 @@
     alert('Settings saved. Use Save to push backup to GitHub.');
   }
 
-  // --- Fetch latest backup: try raw URL first (works when API is blocked), then API; never reject
+  // --- Fetch latest backup: try raw URL (main then master), then API; never reject
   var NO_CACHE = { cache: 'no-store', headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' } };
   function fetchBackupFromGitHub() {
     var repo = (localStorage.getItem(GITHUB_REPO_KEY) || 'EgyptSeal/BUD').trim() || 'EgyptSeal/BUD';
     var path = 'database/backup.json';
     var ts = Date.now();
-    var rawUrl = 'https://raw.githubusercontent.com/' + repo + '/main/' + path + '?t=' + ts;
-    var apiContents = 'https://api.github.com/repos/' + repo + '/contents/' + path + '?ref=main&t=' + ts;
 
     function parseJson(text) {
       try { return text ? JSON.parse(text) : null; } catch (e) { return null; }
@@ -928,15 +926,31 @@
         return JSON.parse(decodeURIComponent(escape(atob(b64))));
       } catch (e) { return null; }
     }
+    function tryRaw(branch) {
+      var url = 'https://raw.githubusercontent.com/' + repo + '/' + branch + '/' + path + '?t=' + ts;
+      return fetch(url, NO_CACHE)
+        .then(function (r) { return r.ok ? r.text() : null; }, function () { return null; })
+        .then(function (text) { return parseJson(text); });
+    }
+    function tryApi(branch) {
+      var url = 'https://api.github.com/repos/' + repo + '/contents/' + path + '?ref=' + branch + '&t=' + ts;
+      return fetch(url, NO_CACHE)
+        .then(function (r) { return r.ok ? r.text() : null; }, function () { return null; })
+        .then(fromApiText);
+    }
 
-    return fetch(rawUrl, NO_CACHE)
-      .then(function (r) { return r.ok ? r.text() : null; }, function () { return null; })
-      .then(function (text) { return parseJson(text); })
+    return tryRaw('main')
       .then(function (payload) {
         if (payload && typeof payload === 'object') return payload;
-        return fetch(apiContents, NO_CACHE)
-          .then(function (r) { return r.ok ? r.text() : null; }, function () { return null; })
-          .then(fromApiText);
+        return tryRaw('master');
+      })
+      .then(function (payload) {
+        if (payload && typeof payload === 'object') return payload;
+        return tryApi('main');
+      })
+      .then(function (payload) {
+        if (payload && typeof payload === 'object') return payload;
+        return tryApi('master');
       })
       .then(function (p) { return p || null; })
       .catch(function () { return null; });
