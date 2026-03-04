@@ -34,17 +34,20 @@
       </div>
     </header>
 
-    <!-- Settings modal: repo only; token is set by app owner and cannot be changed by users -->
+    <!-- Settings modal: repo and token (for owner to update when token expires) -->
     <div id="settings-modal" class="modal" style="display:none" aria-hidden="true">
       <div class="modal-backdrop" id="settings-backdrop"></div>
       <div class="modal-content">
         <h3 class="panel-heading">Settings — Save to GitHub</h3>
-        <p class="panel-desc">Data loads from GitHub when you open the app and saves when you click Save. The GitHub token is set by the app owner only; users cannot add or change it.</p>
+        <p class="panel-desc">Data loads from GitHub when you open the app and saves when you click Save. If the token has expired, paste your new token below (only the app owner should change this).</p>
         <div class="form-group">
           <label>GitHub repo (owner/repo)</label>
           <input type="text" id="settings-repo" placeholder="EgyptSeal/BUD" value="EgyptSeal/BUD" />
         </div>
-        <p class="panel-desc settings-token-note">Token is configured in the app code. If Save fails, the owner must update the token in the code and redeploy.</p>
+        <div class="form-group">
+          <label>Personal Access Token (update when expired)</label>
+          <input type="password" id="settings-token" placeholder="ghp_xxxx..." autocomplete="off" />
+        </div>
         <div class="modal-actions">
           <button type="button" class="btn btn-primary" id="settings-save">Save settings</button>
           <button type="button" class="btn btn-ghost" id="settings-cancel">Cancel</button>

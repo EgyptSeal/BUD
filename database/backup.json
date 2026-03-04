@@ -13,7 +13,7 @@
         },
         {
           "name": "Martyr's Fund Deduction",
-          "amount": 69
+          "amount": 72
         },
         {
           "name": "Mobile Bill",
@@ -24,9 +24,9 @@
           "amount": 7077
         }
       ],
-      "income": 99357,
+      "income": 99354,
       "annualBonus": 0,
-      "savingFromLastMonth": 247000,
+      "savingFromLastMonth": 0,
       "expenses": [
         {
           "category": "Apartment",
@@ -40,10 +40,10 @@
         {
           "category": "Apartment",
           "subcategory": "Electricity",
-          "spent": 1300,
-          "amount": 1300,
+          "spent": 1025,
+          "amount": 1025,
           "currency": "EGP",
-          "amountEGP": 1300,
+          "amountEGP": 1025,
           "paymentMethod": "debit"
         },
         {
@@ -155,12 +155,48 @@
           "paymentMethod": "debit"
         },
         {
+          "category": "Luxury",
+          "subcategory": "Gas for Car",
+          "spent": 3500,
+          "amount": 3500,
+          "currency": "EGP",
+          "amountEGP": 3500,
+          "paymentMethod": "debit"
+        },
+        {
           "category": "Super Luxury",
           "subcategory": "Car Wash",
-          "spent": 400,
-          "amount": 400,
+          "spent": 60,
+          "amount": 60,
           "currency": "EGP",
-          "amountEGP": 400,
+          "amountEGP": 60,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Super Luxury",
+          "subcategory": "UBER",
+          "spent": 10500,
+          "amount": 10500,
+          "currency": "EGP",
+          "amountEGP": 10500,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Super Luxury",
+          "subcategory": "Nails",
+          "spent": 250,
+          "amount": 250,
+          "currency": "EGP",
+          "amountEGP": 250,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Super Luxury",
+          "subcategory": "Barber Shop",
+          "spent": 250,
+          "amount": 250,
+          "currency": "EGP",
+          "amountEGP": 250,
           "paymentMethod": "debit"
         },
         {
@@ -283,28 +319,28 @@
         {
           "category": "Food",
           "subcategory": "Groceries",
-          "spent": 6000,
-          "amount": 6000,
+          "spent": 8500,
+          "amount": 8500,
           "currency": "EGP",
-          "amountEGP": 6000,
+          "amountEGP": 8500,
           "paymentMethod": "debit"
         },
         {
           "category": "Food",
           "subcategory": "Delivery",
-          "spent": 8000,
-          "amount": 8000,
+          "spent": 15000,
+          "amount": 15000,
           "currency": "EGP",
-          "amountEGP": 8000,
+          "amountEGP": 15000,
           "paymentMethod": "debit"
         },
         {
           "category": "Food",
           "subcategory": "Coffee",
-          "spent": 4000,
-          "amount": 4000,
+          "spent": 7500,
+          "amount": 7500,
           "currency": "EGP",
-          "amountEGP": 4000,
+          "amountEGP": 7500,
           "paymentMethod": "debit"
         },
         {
@@ -328,28 +364,10 @@
         {
           "category": "Other",
           "subcategory": "Charity giving",
-          "spent": 1500,
-          "amount": 1500,
+          "spent": 0,
+          "amount": 0,
           "currency": "EGP",
-          "amountEGP": 1500,
-          "paymentMethod": "debit"
-        },
-        {
-          "category": "Pet-Mylo",
-          "subcategory": "Anti FL",
-          "spent": 3500,
-          "amount": 3500,
-          "currency": "EGP",
-          "amountEGP": 3500,
-          "paymentMethod": "debit"
-        },
-        {
-          "category": "Pet-Mylo",
-          "subcategory": "Housing",
-          "spent": 1400,
-          "amount": 1400,
-          "currency": "EGP",
-          "amountEGP": 1400,
+          "amountEGP": 0,
           "paymentMethod": "debit"
         }
       ],
@@ -370,5 +388,5 @@
   ],
   "credit": [],
   "trips": [],
-  "exportedAt": "2026-03-04T05:58:18.786Z"
+  "exportedAt": "2026-03-03T21:58:15.731Z"
 }
