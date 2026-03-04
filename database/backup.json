@@ -13,7 +13,7 @@
         },
         {
           "name": "Martyr's Fund Deduction",
-          "amount": 69
+          "amount": 73
         },
         {
           "name": "Mobile Bill",
@@ -24,9 +24,9 @@
           "amount": 7077
         }
       ],
-      "income": 99357,
+      "income": 99353,
       "annualBonus": 0,
-      "savingFromLastMonth": 0,
+      "savingFromLastMonth": 185000,
       "expenses": [
         {
           "category": "Apartment",
@@ -388,5 +388,5 @@
   ],
   "credit": [],
   "trips": [],
-  "exportedAt": "2026-03-04T00:35:17.203Z"
+  "exportedAt": "2026-03-04T00:35:49.069Z"
 }
