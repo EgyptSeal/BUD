@@ -829,7 +829,7 @@
       'Accept': 'application/vnd.github.v3+json',
       'Content-Type': 'application/json'
     };
-    return fetch(url, { method: 'GET', headers: headers })
+    return fetch(url, { method: 'GET', headers: headers, cache: 'no-store' })
       .then(r => {
         if (r.status === 401) return r.json().then(() => { throw new Error('TOKEN_EXPIRED'); });
         return r.status === 200 ? r.json() : null;
@@ -837,7 +837,7 @@
       .then(file => {
         const body = { message: message, content: content };
         if (file && file.sha) body.sha = file.sha;
-        return fetch(url, { method: 'PUT', headers: headers, body: JSON.stringify(body) });
+        return fetch(url, { method: 'PUT', headers: headers, body: JSON.stringify(body), cache: 'no-store' });
       })
       .then(r => {
         if (r.status === 401) return r.json().then(() => { throw new Error('TOKEN_EXPIRED'); });
@@ -846,8 +846,12 @@
       });
   }
 
-  // --- Save: push backup to GitHub only (cloud)
+  // --- Save: push backup to GitHub only (cloud); sync form first so entries are up to date
   function saveAllToDatabase() {
+    var grid = document.getElementById('category-grid');
+    if (grid) {
+      grid.querySelectorAll('input[data-field], select[data-field]').forEach(function (el) { persistExpenseField(el); });
+    }
     const payload = {
       database: JSON.parse(localStorage.getItem(DE.STORAGE_KEY) || '{}'),
       loans: JSON.parse(localStorage.getItem(DE.LOANS_KEY) || '[]'),
@@ -861,7 +865,7 @@
       return;
     }
     saveToGitHub(payload).then(function (ok) {
-      if (ok) alert('Saved to GitHub (database/backup.json).');
+      if (ok) alert('Saved. Other users: refresh the page to see updates.');
       else alert('Could not save to GitHub.');
     }).catch(function (err) {
       const msg = err && err.message ? err.message : '';
@@ -893,11 +897,11 @@
     alert('Settings saved. Use Save to push backup to GitHub.');
   }
 
-  // --- Load backup from GitHub on startup (cloud = source of truth; localStorage is working copy)
+  // --- Load backup from GitHub on startup (cache-bust so other users get latest after you save)
   function loadFromGitHubOnStartup() {
     const repo = (localStorage.getItem(GITHUB_REPO_KEY) || 'EgyptSeal/BUD').trim() || 'EgyptSeal/BUD';
-    const url = 'https://raw.githubusercontent.com/' + repo + '/main/database/backup.json';
-    return fetch(url)
+    const url = 'https://raw.githubusercontent.com/' + repo + '/main/database/backup.json?t=' + Date.now();
+    return fetch(url, { cache: 'no-store' })
       .then(r => {
         if (!r.ok) return null;
         return r.json();
@@ -913,13 +917,9 @@
       .catch(() => null);
   }
 
-  function resetAllData() {
-    if (!confirm('Reset all data to default values? This cannot be undone.')) return;
-    localStorage.removeItem(DE.STORAGE_KEY);
-    localStorage.removeItem(DE.LOANS_KEY);
-    localStorage.removeItem(DE.CREDIT_KEY);
-    localStorage.removeItem(DE.TRIPS_KEY);
-    location.reload();
+  function refreshPage() {
+    var u = window.location.pathname + (window.location.search || '') + (window.location.search ? '&' : '?') + '_=' + Date.now();
+    window.location.href = u;
   }
 
   // --- Init: load from GitHub first (cloud = source of truth), then run UI
@@ -979,7 +979,7 @@
     if ($('btn-theme')) $('btn-theme').addEventListener('click', toggleTheme);
 
     if ($('btn-save-db')) $('btn-save-db').addEventListener('click', saveAllToDatabase);
-    if ($('btn-reset-db')) $('btn-reset-db').addEventListener('click', resetAllData);
+    if ($('btn-refresh-page')) $('btn-refresh-page').addEventListener('click', refreshPage);
     if ($('btn-settings')) $('btn-settings').addEventListener('click', openSettingsModal);
     if ($('settings-save')) $('settings-save').addEventListener('click', saveGitHubSettings);
     if ($('settings-cancel')) $('settings-cancel').addEventListener('click', closeSettingsModal);
