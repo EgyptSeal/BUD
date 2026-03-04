@@ -93,38 +93,11 @@
         },
         {
           "category": "Pet-Mylo",
-          "subcategory": "Buying",
-          "spent": 0,
-          "amount": 0,
-          "currency": "EGP",
-          "amountEGP": 0,
-          "paymentMethod": "debit"
-        },
-        {
-          "category": "Pet-Mylo",
-          "subcategory": "Grooming + Boarding",
-          "spent": 0,
-          "amount": 0,
-          "currency": "EGP",
-          "amountEGP": 0,
-          "paymentMethod": "debit"
-        },
-        {
-          "category": "Pet-Mylo",
-          "subcategory": "Vaccines",
-          "spent": 0,
-          "amount": 0,
-          "currency": "EGP",
-          "amountEGP": 0,
-          "paymentMethod": "debit"
-        },
-        {
-          "category": "Pet-Mylo",
           "subcategory": "Diapers",
-          "spent": 0,
-          "amount": 0,
+          "spent": 1420,
+          "amount": 1420,
           "currency": "EGP",
-          "amountEGP": 0,
+          "amountEGP": 1420,
           "paymentMethod": "debit"
         },
         {
@@ -148,10 +121,10 @@
         {
           "category": "Luxury",
           "subcategory": "Cigarettes",
-          "spent": 9900,
-          "amount": 9900,
+          "spent": 8000,
+          "amount": 8000,
           "currency": "EGP",
-          "amountEGP": 9900,
+          "amountEGP": 8000,
           "paymentMethod": "debit"
         },
         {
@@ -265,10 +238,10 @@
         {
           "category": "Car",
           "subcategory": "Cleaning",
-          "spent": 0,
-          "amount": 0,
+          "spent": 450,
+          "amount": 450,
           "currency": "EGP",
-          "amountEGP": 0,
+          "amountEGP": 450,
           "paymentMethod": "debit"
         },
         {
@@ -301,19 +274,10 @@
         {
           "category": "Food",
           "subcategory": "Coffee",
-          "spent": 4000,
-          "amount": 4000,
+          "spent": 3800,
+          "amount": 3800,
           "currency": "EGP",
-          "amountEGP": 4000,
-          "paymentMethod": "debit"
-        },
-        {
-          "category": "Food",
-          "subcategory": "Restaurants",
-          "spent": 0,
-          "amount": 0,
-          "currency": "EGP",
-          "amountEGP": 0,
+          "amountEGP": 3800,
           "paymentMethod": "debit"
         },
         {
@@ -328,10 +292,10 @@
         {
           "category": "Pet-Mylo",
           "subcategory": "Anti FL",
-          "spent": 3500,
-          "amount": 3500,
+          "spent": 3550,
+          "amount": 3550,
           "currency": "EGP",
-          "amountEGP": 3500,
+          "amountEGP": 3550,
           "paymentMethod": "debit"
         },
         {
@@ -361,5 +325,5 @@
   ],
   "credit": [],
   "trips": [],
-  "exportedAt": "2026-03-04T06:11:01.736Z"
+  "exportedAt": "2026-03-04T06:14:02.922Z"
 }
