@@ -13,7 +13,7 @@
         },
         {
           "name": "Martyr's Fund Deduction",
-          "amount": 72
+          "amount": 69
         },
         {
           "name": "Mobile Bill",
@@ -24,9 +24,9 @@
           "amount": 7077
         }
       ],
-      "income": 99354,
+      "income": 99357,
       "annualBonus": 0,
-      "savingFromLastMonth": 0,
+      "savingFromLastMonth": 247000,
       "expenses": [
         {
           "category": "Apartment",
@@ -40,10 +40,10 @@
         {
           "category": "Apartment",
           "subcategory": "Electricity",
-          "spent": 1025,
-          "amount": 1025,
+          "spent": 1300,
+          "amount": 1300,
           "currency": "EGP",
-          "amountEGP": 1025,
+          "amountEGP": 1300,
           "paymentMethod": "debit"
         },
         {
@@ -58,10 +58,10 @@
         {
           "category": "Apartment",
           "subcategory": "N. Gas",
-          "spent": 0,
-          "amount": 0,
+          "spent": 151,
+          "amount": 151,
           "currency": "EGP",
-          "amountEGP": 0,
+          "amountEGP": 151,
           "paymentMethod": "debit"
         },
         {
@@ -155,48 +155,12 @@
           "paymentMethod": "debit"
         },
         {
-          "category": "Luxury",
-          "subcategory": "Gas for Car",
-          "spent": 3500,
-          "amount": 3500,
-          "currency": "EGP",
-          "amountEGP": 3500,
-          "paymentMethod": "debit"
-        },
-        {
           "category": "Super Luxury",
           "subcategory": "Car Wash",
-          "spent": 60,
-          "amount": 60,
+          "spent": 400,
+          "amount": 400,
           "currency": "EGP",
-          "amountEGP": 60,
-          "paymentMethod": "debit"
-        },
-        {
-          "category": "Super Luxury",
-          "subcategory": "UBER",
-          "spent": 10500,
-          "amount": 10500,
-          "currency": "EGP",
-          "amountEGP": 10500,
-          "paymentMethod": "debit"
-        },
-        {
-          "category": "Super Luxury",
-          "subcategory": "Nails",
-          "spent": 250,
-          "amount": 250,
-          "currency": "EGP",
-          "amountEGP": 250,
-          "paymentMethod": "debit"
-        },
-        {
-          "category": "Super Luxury",
-          "subcategory": "Barber Shop",
-          "spent": 250,
-          "amount": 250,
-          "currency": "EGP",
-          "amountEGP": 250,
+          "amountEGP": 400,
           "paymentMethod": "debit"
         },
         {
@@ -319,28 +283,28 @@
         {
           "category": "Food",
           "subcategory": "Groceries",
-          "spent": 8500,
-          "amount": 8500,
+          "spent": 6000,
+          "amount": 6000,
           "currency": "EGP",
-          "amountEGP": 8500,
+          "amountEGP": 6000,
           "paymentMethod": "debit"
         },
         {
           "category": "Food",
           "subcategory": "Delivery",
-          "spent": 15000,
-          "amount": 15000,
+          "spent": 8000,
+          "amount": 8000,
           "currency": "EGP",
-          "amountEGP": 15000,
+          "amountEGP": 8000,
           "paymentMethod": "debit"
         },
         {
           "category": "Food",
           "subcategory": "Coffee",
-          "spent": 7500,
-          "amount": 7500,
+          "spent": 4000,
+          "amount": 4000,
           "currency": "EGP",
-          "amountEGP": 7500,
+          "amountEGP": 4000,
           "paymentMethod": "debit"
         },
         {
@@ -355,19 +319,28 @@
         {
           "category": "Utilities",
           "subcategory": "Mobile Bill",
-          "spent": 881,
-          "amount": 881,
+          "spent": 1030,
+          "amount": 1030,
           "currency": "EGP",
-          "amountEGP": 881,
+          "amountEGP": 1030,
           "paymentMethod": "debit"
         },
         {
-          "category": "Other",
-          "subcategory": "Charity giving",
-          "spent": 0,
-          "amount": 0,
+          "category": "Pet-Mylo",
+          "subcategory": "Anti FL",
+          "spent": 3500,
+          "amount": 3500,
           "currency": "EGP",
-          "amountEGP": 0,
+          "amountEGP": 3500,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Pet-Mylo",
+          "subcategory": "Housing",
+          "spent": 1400,
+          "amount": 1400,
+          "currency": "EGP",
+          "amountEGP": 1400,
           "paymentMethod": "debit"
         }
       ],
@@ -388,5 +361,5 @@
   ],
   "credit": [],
   "trips": [],
-  "exportedAt": "2026-03-03T21:58:15.731Z"
+  "exportedAt": "2026-03-04T06:03:25.583Z"
 }
