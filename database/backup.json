@@ -13,7 +13,7 @@
         },
         {
           "name": "Martyr's Fund Deduction",
-          "amount": 69
+          "amount": 72
         },
         {
           "name": "Mobile Bill",
@@ -24,9 +24,9 @@
           "amount": 7077
         }
       ],
-      "income": 99357,
+      "income": 99354,
       "annualBonus": 0,
-      "savingFromLastMonth": 247000,
+      "savingFromLastMonth": 268592,
       "expenses": [
         {
           "category": "Apartment",
@@ -40,19 +40,19 @@
         {
           "category": "Apartment",
           "subcategory": "Electricity",
-          "spent": 1300,
-          "amount": 1300,
+          "spent": 1500,
+          "amount": 1500,
           "currency": "EGP",
-          "amountEGP": 1300,
+          "amountEGP": 1500,
           "paymentMethod": "debit"
         },
         {
           "category": "Apartment",
           "subcategory": "N. Gas",
-          "spent": 151,
-          "amount": 151,
+          "spent": 152,
+          "amount": 152,
           "currency": "EGP",
-          "amountEGP": 151,
+          "amountEGP": 152,
           "paymentMethod": "debit"
         },
         {
@@ -67,10 +67,10 @@
         {
           "category": "Apartment",
           "subcategory": "WE Internet",
-          "spent": 700,
-          "amount": 700,
+          "spent": 1100,
+          "amount": 1100,
           "currency": "EGP",
-          "amountEGP": 700,
+          "amountEGP": 1100,
           "paymentMethod": "debit"
         },
         {
@@ -85,28 +85,19 @@
         {
           "category": "Luxury",
           "subcategory": "Charity",
-          "spent": 1500,
-          "amount": 1500,
+          "spent": 2000,
+          "amount": 2000,
           "currency": "EGP",
-          "amountEGP": 1500,
-          "paymentMethod": "debit"
-        },
-        {
-          "category": "Luxury",
-          "subcategory": "LinkedIn Premium",
-          "spent": 285,
-          "amount": 285,
-          "currency": "EGP",
-          "amountEGP": 285,
+          "amountEGP": 2000,
           "paymentMethod": "debit"
         },
         {
           "category": "Luxury",
           "subcategory": "Cigarettes",
-          "spent": 8000,
-          "amount": 8000,
+          "spent": 10000,
+          "amount": 10000,
           "currency": "EGP",
-          "amountEGP": 8000,
+          "amountEGP": 10000,
           "paymentMethod": "debit"
         },
         {
@@ -121,10 +112,10 @@
         {
           "category": "Entertainment",
           "subcategory": "Netflix",
-          "spent": 252,
-          "amount": 252,
-          "currency": "EGP",
-          "amountEGP": 252,
+          "spent": 256,
+          "amount": 5,
+          "currency": "USD",
+          "amountEGP": 256,
           "paymentMethod": "debit"
         },
         {
@@ -193,28 +184,28 @@
         {
           "category": "Food",
           "subcategory": "Groceries",
-          "spent": 6000,
-          "amount": 6000,
+          "spent": 7000,
+          "amount": 7000,
           "currency": "EGP",
-          "amountEGP": 6000,
+          "amountEGP": 7000,
           "paymentMethod": "debit"
         },
         {
           "category": "Food",
           "subcategory": "Delivery",
-          "spent": 8000,
-          "amount": 8000,
+          "spent": 9000,
+          "amount": 9000,
           "currency": "EGP",
-          "amountEGP": 8000,
+          "amountEGP": 9000,
           "paymentMethod": "debit"
         },
         {
           "category": "Food",
           "subcategory": "Coffee",
-          "spent": 4000,
-          "amount": 4000,
+          "spent": 5000,
+          "amount": 5000,
           "currency": "EGP",
-          "amountEGP": 4000,
+          "amountEGP": 5000,
           "paymentMethod": "debit"
         },
         {
@@ -243,6 +234,60 @@
           "currency": "EGP",
           "amountEGP": 1400,
           "paymentMethod": "debit"
+        },
+        {
+          "category": "Super Luxury",
+          "subcategory": "Weight injections",
+          "spent": 22600,
+          "amount": 22600,
+          "currency": "EGP",
+          "amountEGP": 22600,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Pet-Mylo",
+          "subcategory": "Dry food",
+          "spent": 1800,
+          "amount": 1800,
+          "currency": "EGP",
+          "amountEGP": 1800,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Loans",
+          "subcategory": "Credit settlement",
+          "spent": 5400,
+          "amount": 5400,
+          "currency": "EGP",
+          "amountEGP": 5400,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Car",
+          "subcategory": "Car Application ",
+          "spent": 33500,
+          "amount": 33500,
+          "currency": "EGP",
+          "amountEGP": 33500,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Other",
+          "subcategory": "Jewellery",
+          "spent": 100000,
+          "amount": 100000,
+          "currency": "EGP",
+          "amountEGP": 100000,
+          "paymentMethod": "debit"
+        },
+        {
+          "category": "Entertainment",
+          "subcategory": "orange phone bill",
+          "spent": 1291,
+          "amount": 1291,
+          "currency": "EGP",
+          "amountEGP": 1291,
+          "paymentMethod": "debit"
         }
       ],
       "cashPocketMonthly": 12500
@@ -262,5 +307,5 @@
   ],
   "credit": [],
   "trips": [],
-  "exportedAt": "2026-03-04T17:39:44.250Z"
+  "exportedAt": "2026-03-04T18:16:08.518Z"
 }
