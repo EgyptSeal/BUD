@@ -26,7 +26,7 @@
       ],
       "income": 99354,
       "annualBonus": 0,
-      "savingFromLastMonth": 268592,
+      "savingFromLastMonth": 251592,
       "expenses": [
         {
           "category": "Apartment",
@@ -269,7 +269,8 @@
           "amount": 33500,
           "currency": "EGP",
           "amountEGP": 33500,
-          "paymentMethod": "debit"
+          "paymentMethod": "debit",
+          "creditCardId": "cc-1"
         },
         {
           "category": "Other",
@@ -305,7 +306,15 @@
       "firstPaymentMonth": 11
     }
   ],
-  "credit": [],
+  "credit": [
+    {
+      "id": "cc-1",
+      "limit": 100000,
+      "available": 95000,
+      "interestRateAnnual": 30,
+      "name": "QNB Platinum"
+    }
+  ],
   "trips": [],
-  "exportedAt": "2026-03-04T20:30:48.220Z"
+  "exportedAt": "2026-03-04T20:33:34.730Z"
 }
