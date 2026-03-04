@@ -1,0 +1,20 @@
+UPLOAD THESE FILES TO YOUR GITHUB BUD REPO
+==========================================
+
+This folder contains the 5 files that must be in your EgyptSeal/BUD repo so the cloud app matches your local one.
+
+FILES TO UPLOAD (all in this folder):
+  - index.html
+  - app.js
+  - dataEngine.js
+  - charts.js
+  - style.css
+
+HOW TO UPLOAD:
+1. Go to https://github.com/EgyptSeal/BUD
+2. For EACH file above: click the file name -> click the pencil (Edit) icon -> select all, delete -> paste the content from the same file in this BUD-deploy folder -> Commit changes
+   OR: drag and drop / upload each file to replace the existing one in the repo
+3. Keep your "database" folder and backup.json in the repo (do not delete them)
+4. Wait 1-2 minutes, then open https://egyptseal.github.io/BUD/ and press Ctrl+Shift+R (hard refresh)
+
+Done. The cloud page will match your local app.
