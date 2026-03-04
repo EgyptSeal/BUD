@@ -20,9 +20,9 @@
 
   const $ = (id) => document.getElementById(id);
 
-  // --- GitHub token: leave empty here. If you put it in code and push, GitHub may revoke it when you "allow secret".
-  // Use Settings in the app to enter your token on each device; it stays until you change it or it expires.
-  const PFIS_GITHUB_DEFAULT = { token: '', repo: 'EgyptSeal/BUD' };
+  // --- GitHub token: set here once so the app works on all devices. No one can change it in the app.
+  // When you push, GitHub may block; go to the link in the error and choose "Allow secret" to unblock.
+  const PFIS_GITHUB_DEFAULT = { token: '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..', repo: 'EgyptSeal/BUD' };
 
   function getDb() {
     return DE.loadDatabase();
@@ -846,23 +846,8 @@
       });
   }
 
-  // --- Sync current form values to localStorage before Save (so unsaved input changes are included)
-  function syncFormToStorage() {
-    const grid = $('category-grid');
-    if (grid) {
-      grid.querySelectorAll('input[data-field], select[data-field]').forEach(function (el) {
-        persistExpenseField(el);
-      });
-    }
-    refreshOverviewAndCharts();
-    refreshTips();
-    renderIncomeSummary();
-    renderCashPocketPanel();
-  }
-
   // --- Save: push backup to GitHub only (cloud)
   function saveAllToDatabase() {
-    syncFormToStorage();
     const payload = {
       database: JSON.parse(localStorage.getItem(DE.STORAGE_KEY) || '{}'),
       loans: JSON.parse(localStorage.getItem(DE.LOANS_KEY) || '[]'),
@@ -876,7 +861,7 @@
       return;
     }
     saveToGitHub(payload).then(function (ok) {
-      if (ok) alert('Saved to GitHub. On other devices click "Load from cloud" or refresh; it may take up to 1 min to see changes.');
+      if (ok) alert('Saved to GitHub (database/backup.json).');
       else alert('Could not save to GitHub.');
     }).catch(function (err) {
       const msg = err && err.message ? err.message : '';
@@ -891,7 +876,6 @@
   function openSettingsModal() {
     const cfg = getGitHubConfig();
     if ($('settings-repo')) $('settings-repo').value = cfg.repo;
-    if ($('settings-token')) $('settings-token').value = cfg.token;
     if ($('settings-modal')) $('settings-modal').style.display = 'flex';
   }
 
@@ -901,125 +885,29 @@
 
   function saveGitHubSettings() {
     const repo = ($('settings-repo') && $('settings-repo').value.trim()) || 'EgyptSeal/BUD';
-    const token = ($('settings-token') && $('settings-token').value) ? $('settings-token').value.trim() : '';
     localStorage.setItem(GITHUB_REPO_KEY, repo);
-    localStorage.setItem(GITHUB_TOKEN_KEY, token);
     closeSettingsModal();
-    alert('Settings saved. Use Save to push backup to GitHub.');
+    alert('Settings saved. Token cannot be changed by users; only the app owner can set it in the code.');
   }
 
-  // --- Fetch latest backup: get repo default branch first, then load file from that branch
-  var NO_CACHE = { cache: 'no-store', headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' } };
-  function fetchBackupFromGitHub() {
-    var repo = (localStorage.getItem(GITHUB_REPO_KEY) || 'EgyptSeal/BUD').trim() || 'EgyptSeal/BUD';
-    var path = 'database/backup.json';
-    var ts = Date.now();
-
-    function parseJson(text) {
-      try { return text ? JSON.parse(text) : null; } catch (e) { return null; }
-    }
-    function fromApiText(text) {
-      var apiRes = parseJson(text);
-      if (!apiRes || !apiRes.content) return null;
-      try {
-        var b64 = (apiRes.content || '').replace(/\n/g, '');
-        return JSON.parse(decodeURIComponent(escape(atob(b64))));
-      } catch (e) { return null; }
-    }
-    function getDefaultBranch() {
-      return fetch('https://api.github.com/repos/' + repo + '?t=' + ts, NO_CACHE)
-        .then(function (r) { return r.ok ? r.text() : null; }, function () { return null; })
-        .then(function (text) {
-          var data = parseJson(text);
-          return (data && data.default_branch) ? data.default_branch : 'main';
-        });
-    }
-    function tryRaw(branch) {
-      var url = 'https://raw.githubusercontent.com/' + repo + '/' + branch + '/' + path + '?t=' + ts;
-      return fetch(url, NO_CACHE)
-        .then(function (r) { return r.ok ? r.text() : null; }, function () { return null; })
-        .then(function (text) { return parseJson(text); });
-    }
-    function tryApi(branch) {
-      var url = 'https://api.github.com/repos/' + repo + '/contents/' + path + '?ref=' + branch + '&t=' + ts;
-      return fetch(url, NO_CACHE)
-        .then(function (r) { return r.ok ? r.text() : null; }, function () { return null; })
-        .then(fromApiText);
-    }
-    function tryRawViaProxy(branch) {
-      var rawUrl = 'https://raw.githubusercontent.com/' + repo + '/' + branch + '/' + path + '?t=' + ts;
-      var proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(rawUrl);
-      return fetch(proxyUrl, NO_CACHE)
-        .then(function (r) { return r.ok ? r.text() : null; }, function () { return null; })
-        .then(function (text) { return parseJson(text); });
-    }
-
-    function tryBranch(branch) {
-      return tryRaw(branch).then(function (p) {
-        if (p && typeof p === 'object') return p;
-        return tryApi(branch).then(function (p2) {
-          if (p2 && typeof p2 === 'object') return p2;
-          return tryRawViaProxy(branch);
-        });
-      });
-    }
-    return getDefaultBranch()
-      .then(function (branch) {
-        return tryBranch(branch).then(function (p) {
-          if (p && typeof p === 'object') return p;
-          var other = branch === 'main' ? 'master' : 'main';
-          return tryBranch(other);
-        });
-      })
-      .then(function (p) { return p || null; })
-      .catch(function () { return null; });
-  }
-
-  function applyBackupPayload(payload) {
-    if (!payload || typeof payload !== 'object') return false;
-    if (payload.database != null) localStorage.setItem(DE.STORAGE_KEY, JSON.stringify(payload.database));
-    if (payload.loans != null) localStorage.setItem(DE.LOANS_KEY, JSON.stringify(payload.loans));
-    if (payload.credit != null) localStorage.setItem(DE.CREDIT_KEY, JSON.stringify(payload.credit));
-    if (payload.trips != null) localStorage.setItem(DE.TRIPS_KEY, JSON.stringify(payload.trips));
-    return true;
-  }
-
-  function applyPastedBackup() {
-    var el = document.getElementById('settings-paste-backup');
-    if (!el) return;
-    var text = (el.value || '').trim();
-    if (!text) { alert('Paste the backup JSON first (from the link in Settings).'); return; }
-    try {
-      var payload = JSON.parse(text);
-      if (!applyBackupPayload(payload)) { alert('Invalid backup format.'); return; }
-      location.reload();
-    } catch (e) { alert('Invalid JSON. Copy the full backup from the link and paste again.'); }
-  }
-
+  // --- Load backup from GitHub on startup (cloud = source of truth; localStorage is working copy)
   function loadFromGitHubOnStartup() {
-    return fetchBackupFromGitHub().then(function (payload) {
-      return applyBackupPayload(payload) ? true : null;
-    });
-  }
-
-  function loadFromCloudAndRefresh() {
-    var btn = $('btn-load-cloud');
-    var oldText = btn ? btn.textContent : '';
-    if (btn) { btn.disabled = true; btn.textContent = 'Loading…'; }
-    fetchBackupFromGitHub()
-      .then(function (payload) {
-        if (applyBackupPayload(payload)) {
-          location.reload();
-          return;
-        }
-        alert('Could not load from cloud.\n\n1. In Settings set repo to exactly: EgyptSeal/BUD\n2. On a device where the app works: click Save once (so database/backup.json is created).\n3. On GitHub open the database folder and confirm backup.json is there.\nThen try Load from cloud again.');
+    const repo = (localStorage.getItem(GITHUB_REPO_KEY) || 'EgyptSeal/BUD').trim() || 'EgyptSeal/BUD';
+    const url = 'https://raw.githubusercontent.com/' + repo + '/main/database/backup.json';
+    return fetch(url)
+      .then(r => {
+        if (!r.ok) return null;
+        return r.json();
       })
-      .catch(function () {
-        alert('Could not load from cloud.\n\n1. In Settings set repo to exactly: EgyptSeal/BUD\n2. On a device where the app works: click Save once (so database/backup.json is created).\n3. On GitHub open the database folder and confirm backup.json is there.\nThen try Load from cloud again.');
+      .then(payload => {
+        if (!payload || typeof payload !== 'object') return;
+        if (payload.database != null) localStorage.setItem(DE.STORAGE_KEY, JSON.stringify(payload.database));
+        if (payload.loans != null) localStorage.setItem(DE.LOANS_KEY, JSON.stringify(payload.loans));
+        if (payload.credit != null) localStorage.setItem(DE.CREDIT_KEY, JSON.stringify(payload.credit));
+        if (payload.trips != null) localStorage.setItem(DE.TRIPS_KEY, JSON.stringify(payload.trips));
+        return true;
       })
-      .then(function () {
-        if (btn) { btn.disabled = false; btn.textContent = oldText; }
-      });
+      .catch(() => null);
   }
 
   function resetAllData() {
@@ -1031,41 +919,50 @@
     location.reload();
   }
 
-  // --- Init: attach all button listeners FIRST so cloud and slow networks never leave app unclickable
+  // --- Init: load from GitHub first (cloud = source of truth), then run UI
   function init() {
-    var selectYear = $('select-year');
-    var selectMonth = $('select-month');
+    applyThemeByTime();
+    setInterval(applyThemeByTime, 60000);
+    applyDefaultGitHubToStorage();
+    loadFromGitHubOnStartup().then(function () {
+      fillYearMonthSelectors();
+      const db = getDb();
+      loadMonthIntoUI();
+      renderLoanSummary();
+
+      const selectYear = $('select-year');
+    const selectMonth = $('select-month');
     if (selectYear) selectYear.addEventListener('change', onYearMonthChange);
     if (selectMonth) selectMonth.addEventListener('change', onYearMonthChange);
 
     if ($('btn-edit-income')) $('btn-edit-income').addEventListener('click', showIncomeEdit);
     if ($('btn-save-income')) $('btn-save-income').addEventListener('click', saveIncomeFromEdit);
     if ($('btn-cancel-income')) $('btn-cancel-income').addEventListener('click', cancelIncomeEdit);
+
     if ($('btn-copy-prev')) $('btn-copy-prev').addEventListener('click', copyPreviousMonth);
 
-    var tabList = document.querySelectorAll('.tab-btn');
-    for (var i = 0; i < tabList.length; i++) {
-      (function (btn) { btn.addEventListener('click', function () { switchTab(btn.getAttribute('data-tab')); }); })(tabList[i]);
-    }
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab')));
+    });
 
     if ($('btn-add-credit-card')) $('btn-add-credit-card').addEventListener('click', function () {
       DE.addCreditCard();
       loadCreditIntoUI();
     });
     if ($('btn-atm-add')) $('btn-atm-add').addEventListener('click', function () {
-      var amt = Number($('atm-amount') && $('atm-amount').value) || 0;
+      const amt = Number($('atm-amount') && $('atm-amount').value) || 0;
       if (amt <= 0) return;
-      var income = getIncome();
-      var expenses = getExpenses();
-      var debitSpent = DE.totalSpentByPaymentMethod ? DE.totalSpentByPaymentMethod(expenses, 'debit') : 0;
-      var remainingDebit = Math.max(0, income - debitSpent);
-      var toAdd = Math.min(amt, remainingDebit);
+      const income = getIncome();
+      const expenses = getExpenses();
+      const debitSpent = DE.totalSpentByPaymentMethod ? DE.totalSpentByPaymentMethod(expenses, 'debit') : 0;
+      const remainingDebit = Math.max(0, income - debitSpent);
+      const toAdd = Math.min(amt, remainingDebit);
       if (toAdd <= 0) {
         alert('Remaining debit balance is ' + formatMoney(remainingDebit) + ' EGP. You cannot withdraw more than your total debit income this month.');
         return;
       }
       if (toAdd < amt) alert('Capped to remaining debit balance: ' + formatMoney(toAdd) + ' EGP.');
-      var db = getDb();
+      const db = getDb();
       DE.addExpenseRow(db, currentYear, currentMonth, { category: 'Other', subcategory: 'ATM withdrawal', spent: toAdd, amount: toAdd, currency: 'EGP', amountEGP: toAdd, paymentMethod: 'debit' });
       if ($('atm-amount')) $('atm-amount').value = '';
       loadMonthIntoUI();
@@ -1075,45 +972,25 @@
     if ($('trip-add-expense')) $('trip-add-expense').addEventListener('click', addTripExpenseRow);
     if ($('trip-save')) $('trip-save').addEventListener('click', saveTripFromForm);
     if ($('trip-cancel')) $('trip-cancel').addEventListener('click', cancelTripForm);
+
     if ($('btn-theme')) $('btn-theme').addEventListener('click', toggleTheme);
+
     if ($('btn-save-db')) $('btn-save-db').addEventListener('click', saveAllToDatabase);
-    if ($('btn-load-cloud')) $('btn-load-cloud').addEventListener('click', loadFromCloudAndRefresh);
     if ($('btn-reset-db')) $('btn-reset-db').addEventListener('click', resetAllData);
     if ($('btn-settings')) $('btn-settings').addEventListener('click', openSettingsModal);
     if ($('settings-save')) $('settings-save').addEventListener('click', saveGitHubSettings);
-    if ($('settings-apply-backup')) $('settings-apply-backup').addEventListener('click', applyPastedBackup);
     if ($('settings-cancel')) $('settings-cancel').addEventListener('click', closeSettingsModal);
     if ($('settings-backdrop')) $('settings-backdrop').addEventListener('click', closeSettingsModal);
 
-    var cashInput = $('cash-pocket-monthly');
+    const cashInput = $('cash-pocket-monthly');
     if (cashInput) {
       cashInput.addEventListener('change', function () {
-        var db = getDb();
-        var val = Number(this.value) || 0;
+        const db = getDb();
+        const val = Number(this.value) || 0;
         if (DE.setCashPocketMonthly) DE.setCashPocketMonthly(db, currentYear, currentMonth, val);
         renderIncomeSummary();
       });
     }
-
-    try {
-      applyThemeByTime();
-      setInterval(applyThemeByTime, 60000);
-      applyDefaultGitHubToStorage();
-      fillYearMonthSelectors();
-      loadMonthIntoUI();
-      renderLoanSummary();
-    } catch (e) {
-      if (typeof console !== 'undefined' && console.error) console.error('Budget app init:', e);
-    }
-
-    loadFromGitHubOnStartup().then(function (applied) {
-      if (applied) {
-        try {
-          fillYearMonthSelectors();
-          loadMonthIntoUI();
-          renderLoanSummary();
-        } catch (err) {}
-      }
     });
   }
 
