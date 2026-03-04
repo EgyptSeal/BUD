@@ -954,14 +954,21 @@
         .then(function (text) { return parseJson(text); });
     }
 
+    function tryBranch(branch) {
+      return tryRaw(branch).then(function (p) {
+        if (p && typeof p === 'object') return p;
+        return tryApi(branch).then(function (p2) {
+          if (p2 && typeof p2 === 'object') return p2;
+          return tryRawViaProxy(branch);
+        });
+      });
+    }
     return getDefaultBranch()
       .then(function (branch) {
-        return tryRaw(branch).then(function (p) {
+        return tryBranch(branch).then(function (p) {
           if (p && typeof p === 'object') return p;
-          return tryApi(branch).then(function (p2) {
-            if (p2 && typeof p2 === 'object') return p2;
-            return tryRawViaProxy(branch);
-          });
+          var other = branch === 'main' ? 'master' : 'main';
+          return tryBranch(other);
         });
       })
       .then(function (p) { return p || null; })
@@ -975,6 +982,18 @@
     if (payload.credit != null) localStorage.setItem(DE.CREDIT_KEY, JSON.stringify(payload.credit));
     if (payload.trips != null) localStorage.setItem(DE.TRIPS_KEY, JSON.stringify(payload.trips));
     return true;
+  }
+
+  function applyPastedBackup() {
+    var el = document.getElementById('settings-paste-backup');
+    if (!el) return;
+    var text = (el.value || '').trim();
+    if (!text) { alert('Paste the backup JSON first (from the link in Settings).'); return; }
+    try {
+      var payload = JSON.parse(text);
+      if (!applyBackupPayload(payload)) { alert('Invalid backup format.'); return; }
+      location.reload();
+    } catch (e) { alert('Invalid JSON. Copy the full backup from the link and paste again.'); }
   }
 
   function loadFromGitHubOnStartup() {
@@ -1062,6 +1081,7 @@
     if ($('btn-reset-db')) $('btn-reset-db').addEventListener('click', resetAllData);
     if ($('btn-settings')) $('btn-settings').addEventListener('click', openSettingsModal);
     if ($('settings-save')) $('settings-save').addEventListener('click', saveGitHubSettings);
+    if ($('settings-apply-backup')) $('settings-apply-backup').addEventListener('click', applyPastedBackup);
     if ($('settings-cancel')) $('settings-cancel').addEventListener('click', closeSettingsModal);
     if ($('settings-backdrop')) $('settings-backdrop').addEventListener('click', closeSettingsModal);
 
