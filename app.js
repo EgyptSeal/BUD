@@ -22,7 +22,7 @@
 
   // --- GitHub token: set here once so the app works on all devices. No one can change it in the app.
   // When you push, GitHub may block; go to the link in the error and choose "Allow secret" to unblock.
-  const PFIS_GITHUB_DEFAULT = { token: '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..', repo: 'EgyptSeal/BUD' };
+  const PFIS_GITHUB_DEFAULT = { token: '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..', repo: 'EgyptSeal/BUD' };
 
   function getDb() {
     return DE.loadDatabase();
@@ -1000,3 +1000,4 @@
     init();
   }
 })();
+
